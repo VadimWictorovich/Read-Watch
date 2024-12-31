@@ -24,6 +24,11 @@ final class SecondVC: UIViewController, UITableViewDataSource, UITableViewDelega
         setupUI()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        tabBarController?.navigationItem.title = "Весь контент"
+    }
+    
     // MARK: - Table view data source and delegate
     
     func numberOfSections(in tableView: UITableView) -> Int { sections.count }
@@ -72,6 +77,22 @@ final class SecondVC: UIViewController, UITableViewDataSource, UITableViewDelega
     }
     
     private func setupUI() {
+        tabBarController?.navigationItem.title = "Весь контент"
         searchBar.placeholder = "Поиск..."
+        setupSegmentedControl()
+    }
+    
+    private func setupSegmentedControl() {
+        segmentedControl.addTarget(self, action: #selector(segmentChanged(_:)), for: .valueChanged)
+    }
+    
+    private func scrollToSection(section: Int) {
+        let indexPath = IndexPath(row: 0, section: section)
+        tableView.scrollToRow(at: indexPath, at: .top, animated: true)
+    }
+    
+    @objc private func segmentChanged(_ sender: UISegmentedControl) {
+        let section = sender.selectedSegmentIndex
+        scrollToSection(section: section)
     }
 }

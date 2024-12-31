@@ -25,7 +25,7 @@
             </objects>
             <point key="canvasLocation" x="-145" y="-97"/>
         </scene>
-        <!--Item-->
+        <!--Главная-->
         <scene sceneID="ahZ-O3-noL">
             <objects>
                 <tableViewController storyboardIdentifier="FirstTVC" id="L25-s7-fIR" customClass="FirstTVC" customModule="Read_Watch" customModuleProvider="target" sceneMemberID="viewController">
@@ -47,16 +47,16 @@
                             <outlet property="delegate" destination="L25-s7-fIR" id="bIy-uI-m5Y"/>
                         </connections>
                     </tableView>
-                    <tabBarItem key="tabBarItem" title="Item" id="2Zy-7a-9Xm"/>
+                    <tabBarItem key="tabBarItem" title="Главная" id="2Zy-7a-9Xm"/>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Mek-Wa-in1" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1444" y="-756"/>
         </scene>
-        <!--Tab Bar Cont-->
+        <!--Tab Bar Controller-->
         <scene sceneID="Nd2-UN-6i8">
             <objects>
-                <tabBarController storyboardIdentifier="TabBar" id="RS9-Z9-Upe" customClass="TabBarCont" customModule="Read_Watch" customModuleProvider="target" sceneMemberID="viewController">
+                <tabBarController id="RS9-Z9-Upe" sceneMemberID="viewController">
                     <navigationItem key="navigationItem" id="MaQ-kp-4ri"/>
                     <tabBar key="tabBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="Nn4-M5-cdI">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="49"/>
@@ -72,7 +72,7 @@
             </objects>
             <point key="canvasLocation" x="540" y="-96"/>
         </scene>
-        <!--Item-->
+        <!--Все-->
         <scene sceneID="4eV-Bh-8v3">
             <objects>
                 <viewController storyboardIdentifier="SecondVC" id="bK0-RC-IaV" customClass="SecondVC" customModule="Read_Watch" customModuleProvider="target" sceneMemberID="viewController">
@@ -81,7 +81,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="MpY-cj-4gz">
-                                <rect key="frame" x="20" y="110" width="145" height="32"/>
+                                <rect key="frame" x="50" y="110" width="293" height="32"/>
                                 <segments>
                                     <segment title="Книги"/>
                                     <segment title="Фильмы"/>
@@ -136,14 +136,14 @@
                             <constraint firstItem="MpY-cj-4gz" firstAttribute="top" secondItem="2gr-uS-eWd" secondAttribute="top" constant="110" id="3RY-YE-fBy"/>
                             <constraint firstItem="mfI-9s-BpU" firstAttribute="trailing" secondItem="CBM-2l-ofI" secondAttribute="trailing" id="83e-1U-6Qk"/>
                             <constraint firstItem="mfI-9s-BpU" firstAttribute="top" secondItem="MpY-cj-4gz" secondAttribute="bottom" constant="10" id="Ff0-JH-O31"/>
-                            <constraint firstItem="MpY-cj-4gz" firstAttribute="leading" secondItem="2gr-uS-eWd" secondAttribute="leading" constant="20" id="Ij1-HA-Qlj"/>
+                            <constraint firstItem="MpY-cj-4gz" firstAttribute="leading" secondItem="2gr-uS-eWd" secondAttribute="leading" constant="50" id="Ij1-HA-Qlj"/>
                             <constraint firstItem="84E-Rc-rOO" firstAttribute="leading" secondItem="CBM-2l-ofI" secondAttribute="leading" constant="10" id="ZcF-cm-CqG"/>
-                            <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="MpY-cj-4gz" secondAttribute="trailing" constant="20" symbolic="YES" id="oYA-tW-jGk"/>
+                            <constraint firstAttribute="trailing" secondItem="MpY-cj-4gz" secondAttribute="trailing" constant="50" id="oYA-tW-jGk"/>
                             <constraint firstItem="84E-Rc-rOO" firstAttribute="top" secondItem="mfI-9s-BpU" secondAttribute="bottom" constant="5" id="plT-xM-Yzr"/>
                             <constraint firstItem="CBM-2l-ofI" firstAttribute="trailing" secondItem="84E-Rc-rOO" secondAttribute="trailing" constant="10" id="qrM-F6-neM"/>
                         </constraints>
                     </view>
-                    <tabBarItem key="tabBarItem" title="Item" id="4Wd-cP-tpf"/>
+                    <tabBarItem key="tabBarItem" title="Все" id="4Wd-cP-tpf"/>
                     <connections>
                         <outlet property="searchBar" destination="mfI-9s-BpU" id="nKe-xX-qCd"/>
                         <outlet property="segmentedControl" destination="MpY-cj-4gz" id="6hO-1b-Bu0"/>

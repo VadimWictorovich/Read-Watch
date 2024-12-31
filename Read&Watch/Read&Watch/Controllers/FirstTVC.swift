@@ -26,6 +26,13 @@ final class FirstTVC: UITableViewController {
         super.viewDidLoad()
         setupUI()
     }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        tabBarController?.navigationItem.title = "Книги и фильмы"
+    }
+    
+    
 
     // MARK: - Table view data source
 
@@ -75,6 +82,8 @@ final class FirstTVC: UITableViewController {
     // MARK: - Methods
     
     private func setupUI() {
-        title = "READ & WATCH"
+        
     }
+    
+    
 }
