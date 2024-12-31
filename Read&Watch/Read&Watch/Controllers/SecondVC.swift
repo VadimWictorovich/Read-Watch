@@ -7,17 +7,21 @@
 
 import UIKit
 
-class SecondVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
+final class SecondVC: UIViewController, UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate {
     
     private let sections = BooksAndMovies.allCases
     private var books = [String]()
     private var movies = [String]()
     @IBOutlet weak var tableView: UITableView!
+    @IBOutlet weak var segmentedControl: UISegmentedControl!
+    @IBOutlet weak var searchBar: UISearchBar!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.dataSource = self
         tableView.delegate = self
+        searchBar.delegate = self
+        setupUI()
     }
     
     // MARK: - Table view data source and delegate
@@ -68,7 +72,6 @@ class SecondVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
     }
     
     private func setupUI() {
-        
+        searchBar.placeholder = "Поиск..."
     }
-    
 }

@@ -53,10 +53,10 @@
             </objects>
             <point key="canvasLocation" x="1444" y="-756"/>
         </scene>
-        <!--Tab Bar Controller-->
+        <!--Tab Bar Cont-->
         <scene sceneID="Nd2-UN-6i8">
             <objects>
-                <tabBarController id="RS9-Z9-Upe" sceneMemberID="viewController">
+                <tabBarController storyboardIdentifier="TabBar" id="RS9-Z9-Upe" customClass="TabBarCont" customModule="Read_Watch" customModuleProvider="target" sceneMemberID="viewController">
                     <navigationItem key="navigationItem" id="MaQ-kp-4ri"/>
                     <tabBar key="tabBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="Nn4-M5-cdI">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="49"/>
@@ -81,14 +81,14 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="MpY-cj-4gz">
-                                <rect key="frame" x="20" y="70" width="131" height="32"/>
+                                <rect key="frame" x="20" y="110" width="131" height="32"/>
                                 <segments>
                                     <segment title="First"/>
                                     <segment title="Second"/>
                                 </segments>
                             </segmentedControl>
                             <searchBar contentMode="redraw" translatesAutoresizingMaskIntoConstraints="NO" id="mfI-9s-BpU">
-                                <rect key="frame" x="0.0" y="111" width="393" height="60"/>
+                                <rect key="frame" x="0.0" y="151" width="393" height="60"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="60" id="cfg-PN-Igx"/>
                                 </constraints>
@@ -98,7 +98,7 @@
                                 </connections>
                             </searchBar>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="18" estimatedSectionHeaderHeight="-1" sectionFooterHeight="18" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="84E-Rc-rOO">
-                                <rect key="frame" x="10" y="176" width="373" height="588"/>
+                                <rect key="frame" x="10" y="216" width="373" height="548"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="Cell" textLabel="bSi-ME-fcG" detailTextLabel="nyv-zO-vY2" style="IBUITableViewCellStyleSubtitle" id="Aiu-Gg-Zjs">
@@ -133,7 +133,7 @@
                         <constraints>
                             <constraint firstItem="mfI-9s-BpU" firstAttribute="leading" secondItem="CBM-2l-ofI" secondAttribute="leading" id="1DZ-Bu-BE2"/>
                             <constraint firstItem="CBM-2l-ofI" firstAttribute="bottom" secondItem="84E-Rc-rOO" secondAttribute="bottom" constant="5" id="22S-SL-PrH"/>
-                            <constraint firstItem="MpY-cj-4gz" firstAttribute="top" secondItem="2gr-uS-eWd" secondAttribute="top" constant="70" id="5bW-4J-pmw"/>
+                            <constraint firstItem="MpY-cj-4gz" firstAttribute="top" secondItem="2gr-uS-eWd" secondAttribute="top" constant="110" id="3RY-YE-fBy"/>
                             <constraint firstItem="mfI-9s-BpU" firstAttribute="trailing" secondItem="CBM-2l-ofI" secondAttribute="trailing" id="83e-1U-6Qk"/>
                             <constraint firstItem="mfI-9s-BpU" firstAttribute="top" secondItem="MpY-cj-4gz" secondAttribute="bottom" constant="10" id="Ff0-JH-O31"/>
                             <constraint firstItem="MpY-cj-4gz" firstAttribute="leading" secondItem="2gr-uS-eWd" secondAttribute="leading" constant="20" id="Ij1-HA-Qlj"/>
@@ -145,6 +145,8 @@
                     </view>
                     <tabBarItem key="tabBarItem" title="Item" id="4Wd-cP-tpf"/>
                     <connections>
+                        <outlet property="searchBar" destination="mfI-9s-BpU" id="nKe-xX-qCd"/>
+                        <outlet property="segmentedControl" destination="MpY-cj-4gz" id="6hO-1b-Bu0"/>
                         <outlet property="tableView" destination="84E-Rc-rOO" id="twF-8d-2HR"/>
                     </connections>
                 </viewController>

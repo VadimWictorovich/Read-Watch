@@ -7,7 +7,7 @@
 
 import UIKit
 
-class FirstTVC: UITableViewController {
+final class FirstTVC: UITableViewController {
     
     enum Sections: String, CaseIterable {
         case categories = "Категории"
