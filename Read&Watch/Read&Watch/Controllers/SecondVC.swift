@@ -42,25 +42,29 @@ final class SecondVC: UIViewController, UITableViewDataSource, UITableViewDelega
     // MARK: - Table view data source and delegate
     
     func numberOfSections(in tableView: UITableView) -> Int { sections.count }
-    
-    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? { sections[section].rawValue }
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        switch sections[section] {
+        case .books:
+            return books.isEmpty ? "Данные о книгах отсутствуют" : "Книги (\(books.count))"
+        case .movies:
+            return movies.isEmpty ? "Данные о фильмах отсутствуют" : "Фильмы (\(movies.count))"
+        }
+    }
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat { 30 }
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat { 80 }
     
     func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
         guard let header = view as? UITableViewHeaderFooterView else { return }
-        header.textLabel?.textColor = .systemYellow
-        header.textLabel?.font = UIFont.systemFont(ofSize: 18, weight: .bold)
+        header.textLabel?.textColor = .brown
+        header.textLabel?.font = UIFont.systemFont(ofSize: 14, weight: .bold)
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch sections[section] {
         case .books:
-            //return books.count
-            return 20
+            return books.count
         case .movies:
-            //return movies.count
-            return 20
+            return movies.count
         }
     }
     
@@ -69,17 +73,13 @@ final class SecondVC: UIViewController, UITableViewDataSource, UITableViewDelega
         cell.detailTextLabel?.textColor = .gray
         switch sections[indexPath.section] {
         case .books:
-            //            let book = books[indexPath.row]
-            //            cell.textLabel?.text = book.name
-            //            cell.detailTextLabel?.text = book.des
-            cell.textLabel?.text = "Название книги"
-            cell.detailTextLabel?.text = "Автор"
-            // жанр
+            let book = books[indexPath.row]
+            cell.textLabel?.text = book.name
+            cell.detailTextLabel?.text = book.author
         case .movies:
-            //            let movie = movies[indexPath.row]
-            //            cell.textLabel?.text = movie.name
-            cell.textLabel?.text = "Название фильма"
-            cell.detailTextLabel?.text = "Жанр"
+            let movie = movies[indexPath.row]
+            cell.textLabel?.text = movie.name
+            cell.detailTextLabel?.text = movie.genre
         }
         return cell
     }
@@ -104,19 +104,22 @@ final class SecondVC: UIViewController, UITableViewDataSource, UITableViewDelega
         }
     }
     
-    private func getData() {
-        loadBooks()
-        loadMovies()
-        tableView.reloadData()
-    }
-    
     private func saveData() {
         do {
             try context.save()
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                self.tableView.reloadData()
+            }
         } catch {
             let error = error as NSError
             fatalError("-- ошибка метода \(#function) класса SecondVC: \(error)")
         }
+    }
+    
+    private func getData() {
+        loadBooks()
+        loadMovies()
+        tableView.reloadData()
     }
     
     // MARK: - UI Methods
@@ -147,7 +150,7 @@ final class SecondVC: UIViewController, UITableViewDataSource, UITableViewDelega
         scrollToSection(section: section)
     }
     
-    //MARK: Alert methods
+    //MARK: - Alert methods
     
     @objc private func addItem() {
         let alert = UIAlertController(title: "ДОБАВИТЬ",
@@ -175,8 +178,19 @@ final class SecondVC: UIViewController, UITableViewDataSource, UITableViewDelega
         alert.addTextField { tf2 in
             tf2.placeholder = "Автор"
         }
-        alert.addAction(UIAlertAction(title: "Добавить", style: .default, handler: { _ in
-            
+        alert.addAction(UIAlertAction(title: "Добавить", style: .default, handler: { [weak self] _ in
+            if let textField1 = alert.textFields?[0], let textField2 = alert.textFields?[1],
+               let textName = textField1.text, let textAuthor = textField2.text,
+               let self, textName != "", textAuthor != ""
+            {
+                let newBook = Book(context: self.context)
+                newBook.name = textName
+                newBook.author = textAuthor
+                newBook.read = false
+                self.books.append(newBook)
+                self.tableView.insertRows(at: [IndexPath(row: self.books.count - 1, section: 0)], with: .automatic)
+                self.saveData()
+            }
         }))
         alert.addAction(UIAlertAction(title: "Отмена", style: .cancel))
         self.present(alert, animated: true)
@@ -192,8 +206,19 @@ final class SecondVC: UIViewController, UITableViewDataSource, UITableViewDelega
         alert.addTextField { tf2 in
             tf2.placeholder = "Жанр"
         }
-        alert.addAction(UIAlertAction(title: "Добавить", style: .default, handler: { _ in
-            
+        alert.addAction(UIAlertAction(title: "Добавить", style: .default, handler: { [weak self] _ in
+            if let textField1 = alert.textFields?[0], let textField2 = alert.textFields?[1],
+               let textName = textField1.text, let textGenre = textField2.text,
+               let self, textName != "", textGenre != ""
+            {
+                let newMovie = Movie(context: self.context)
+                newMovie.name = textName
+                newMovie.genre = textGenre
+                newMovie.watched = false
+                self.movies.append(newMovie)
+                self.tableView.insertRows(at: [IndexPath(row: self.movies.count - 1, section: 1)], with: .automatic)
+                self.saveData()
+            }
         }))
         alert.addAction(UIAlertAction(title: "Отмена", style: .cancel))
         self.present(alert, animated: true)
