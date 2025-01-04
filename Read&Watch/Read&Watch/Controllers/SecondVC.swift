@@ -37,6 +37,7 @@ final class SecondVC: UIViewController, UITableViewDataSource, UITableViewDelega
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         tabBarController?.navigationItem.title = "Весь контент"
+        setupSegmentedControl()
     }
     
     // MARK: - Table view data source and delegate
@@ -133,14 +134,13 @@ final class SecondVC: UIViewController, UITableViewDataSource, UITableViewDelega
         tabBarController?.navigationItem.rightBarButtonItem = addButton
         addButton.target = self
         addButton.action = #selector(addItem)
-        setupSegmentedControl()
     }
     
     private func setupSegmentedControl() {
         segmentedControl.addTarget(self, action: #selector(segmentChanged(_:)), for: .valueChanged)
     }
     
-    private func scrollToSection(section: Int) {
+    func scrollToSection(section: Int) {
         let indexPath = IndexPath(row: 0, section: section)
         tableView.scrollToRow(at: indexPath, at: .top, animated: true)
     }
@@ -152,7 +152,7 @@ final class SecondVC: UIViewController, UITableViewDataSource, UITableViewDelega
     
     //MARK: - Alert methods
     
-    @objc private func addItem() {
+    @objc func addItem() {
         let alert = UIAlertController(title: "ДОБАВИТЬ",
                                       message: nil,
                                       preferredStyle: .actionSheet)

@@ -76,7 +76,21 @@ final class FirstTVC: UITableViewController {
     
     // TODO: доделать переходы
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        
+        let sb = UIStoryboard(name: "Main", bundle: nil)
+        guard let vc = sb.instantiateViewController(withIdentifier: "SecondVC") as? SecondVC else { return }
+        switch sections[indexPath.section] {
+        case .categories:
+            navigationController?.pushViewController(vc, animated: true)
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                vc.segmentedControl.selectedSegmentIndex = indexPath.row
+                vc.scrollToSection(section: indexPath.row)
+            }
+        case .add:
+            navigationController?.pushViewController(vc, animated: true)
+            vc.addItem()
+        case .whatToDo:
+            break
+        }
     }
     
     // MARK: - Methods
