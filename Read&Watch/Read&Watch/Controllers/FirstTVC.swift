@@ -24,6 +24,7 @@ final class FirstTVC: UITableViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        tableView.isScrollEnabled = false
         setupUI()
     }
     
