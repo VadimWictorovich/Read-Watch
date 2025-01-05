@@ -73,15 +73,20 @@ final class SecondVC: UIViewController, UITableViewDataSource, UITableViewDelega
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
         cell.detailTextLabel?.textColor = .gray
+        cell.imageView?.tintColor = #colorLiteral(red: 1, green: 0.5781051517, blue: 0, alpha: 1)
         switch sections[indexPath.section] {
         case .books:
             let book = books[indexPath.row]
+            // book.fill
             cell.textLabel?.text = book.name
             cell.detailTextLabel?.text = book.author
+            cell.imageView?.image = UIImage(systemName: "book")
         case .movies:
             let movie = movies[indexPath.row]
+            // movieclapper
             cell.textLabel?.text = movie.name
             cell.detailTextLabel?.text = movie.genre
+            cell.imageView?.image = UIImage(systemName: "movieclapper")
         }
         return cell
     }

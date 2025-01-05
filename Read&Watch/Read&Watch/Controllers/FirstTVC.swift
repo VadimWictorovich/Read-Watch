@@ -73,7 +73,7 @@ final class FirstTVC: UITableViewController {
         case .categories:
             let category = categories[indexPath.row]
             cell.lbl?.text = category.rawValue
-            cell.img?.image = indexPath.row == 0 ? UIImage(systemName: "book.closed.fill") : UIImage(systemName: "movieclapper.fill")
+            cell.img?.image = indexPath.row == 0 ? UIImage(systemName: "books.vertical.fill") : UIImage(systemName: "movieclapper.fill")
             cell.img?.backgroundColor = #colorLiteral(red: 0.1764705926, green: 0.4980392158, blue: 0.7568627596, alpha: 1)
             cell.img.tintColor = #colorLiteral(red: 0.921431005, green: 0.9214526415, blue: 0.9214410186, alpha: 1)
         case .add:
@@ -114,6 +114,7 @@ final class FirstTVC: UITableViewController {
     // MARK: - Methods
     
     private func setupUI() {
+        tabBarController?.tabBar.tintColor = #colorLiteral(red: 0.5808190107, green: 0.0884276256, blue: 0.3186392188, alpha: 1)
         tableView.isScrollEnabled = false
     }
 }
