@@ -24,20 +24,24 @@ final class FirstTVC: UITableViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        tableView.isScrollEnabled = false
         setupUI()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         tabBarController?.navigationItem.title = "Книги и фильмы"
+        tabBarController?.navigationController?.navigationBar.prefersLargeTitles = true
     }
     
     
 
-    // MARK: - Table view data source
+    // MARK: - Table view data source and delegate
 
     override func numberOfSections(in tableView: UITableView) -> Int { sections.count }
+    override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return section == 0 ? 80 : 20
+    }
+    //override func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat { 50 }
     
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         switch sections[section] {
@@ -62,18 +66,31 @@ final class FirstTVC: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath) as? CellsFirstTVC
+            else { return UITableViewCell() }
+        cell.img?.layer.cornerRadius = 5
         switch sections[indexPath.section] {
         case .categories:
             let category = categories[indexPath.row]
-            cell.textLabel?.text = category.rawValue
+            cell.lbl?.text = category.rawValue
+            cell.img?.image = indexPath.row == 0 ? UIImage(systemName: "book.closed.fill") : UIImage(systemName: "movieclapper.fill")
+            cell.img?.backgroundColor = #colorLiteral(red: 0.1764705926, green: 0.4980392158, blue: 0.7568627596, alpha: 1)
+            cell.img.tintColor = #colorLiteral(red: 0.921431005, green: 0.9214526415, blue: 0.9214410186, alpha: 1)
         case .add:
-            cell.textLabel?.text = "Добавить"
+            cell.lbl?.text = "Добавить"
+            cell.img?.image = UIImage(systemName: "plus.square.fill.on.square.fill")
+            //cell.img?.image = UIImage(systemName: "plus.rectangle.on.rectangle")
+            cell.img?.backgroundColor = .systemGreen
+            cell.img.tintColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
         case .whatToDo:
-            cell.textLabel?.text = "Чем заняться?"
+            cell.lbl?.text = "Чем заняться?"
+            cell.img?.image = UIImage(systemName: "questionmark.video.fill")
+            cell.img.tintColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
+            cell.img?.backgroundColor = .systemGray
         }
         return cell
     }
+    
     
     // TODO: доделать переходы
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -97,8 +114,6 @@ final class FirstTVC: UITableViewController {
     // MARK: - Methods
     
     private func setupUI() {
-        
+        tableView.isScrollEnabled = false
     }
-    
-    
 }

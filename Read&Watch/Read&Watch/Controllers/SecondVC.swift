@@ -37,6 +37,7 @@ final class SecondVC: UIViewController, UITableViewDataSource, UITableViewDelega
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         tabBarController?.navigationItem.title = "Весь контент"
+        tabBarController?.navigationController?.navigationBar.prefersLargeTitles = false
         setupSegmentedControl()
     }
     
@@ -126,7 +127,7 @@ final class SecondVC: UIViewController, UITableViewDataSource, UITableViewDelega
     // MARK: - UI Methods
     
     private func setupUI() {
-        tabBarController?.navigationItem.title = "Весь контент"
+        navigationController?.navigationBar.prefersLargeTitles = false
         searchBar.placeholder = "Поиск..."
         tableView.dataSource = self
         tableView.delegate = self
