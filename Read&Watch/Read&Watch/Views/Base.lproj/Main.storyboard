@@ -13,8 +13,8 @@
         <scene sceneID="inw-yR-f30">
             <objects>
                 <navigationController id="ONO-Yw-dH4" sceneMemberID="viewController">
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="KRe-gy-Dxk">
-                        <rect key="frame" x="0.0" y="59" width="393" height="44"/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" largeTitles="YES" id="KRe-gy-Dxk">
+                        <rect key="frame" x="0.0" y="59" width="393" height="96"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <connections>
@@ -25,7 +25,7 @@
             </objects>
             <point key="canvasLocation" x="-145" y="-97"/>
         </scene>
-        <!--Главная-->
+        <!--FirstTVC-->
         <scene sceneID="ahZ-O3-noL">
             <objects>
                 <tableViewController storyboardIdentifier="FirstTVC" id="L25-s7-fIR" customClass="FirstTVC" customModule="Read_Watch" customModuleProvider="target" sceneMemberID="viewController">
@@ -33,13 +33,40 @@
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="Cell" id="h2s-LS-WUH">
-                                <rect key="frame" x="20" y="55.333332061767578" width="353" height="43.666667938232422"/>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="Cell" rowHeight="65" id="h2s-LS-WUH" customClass="CellsFirstTVC" customModule="Read_Watch" customModuleProvider="target">
+                                <rect key="frame" x="20" y="38" width="353" height="65"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="h2s-LS-WUH" id="esN-4i-MBg">
-                                    <rect key="frame" x="0.0" y="0.0" width="353" height="43.666667938232422"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="353" height="65"/>
                                     <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="n70-Dg-xjT">
+                                            <rect key="frame" x="12" y="11" width="43" height="43"/>
+                                            <constraints>
+                                                <constraint firstAttribute="width" secondItem="n70-Dg-xjT" secondAttribute="height" multiplier="1:1" id="ZBo-3C-yrl"/>
+                                            </constraints>
+                                        </imageView>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5R6-kR-K5w">
+                                            <rect key="frame" x="75" y="13" width="246" height="39"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                            <nil key="textColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
+                                    <constraints>
+                                        <constraint firstItem="n70-Dg-xjT" firstAttribute="top" secondItem="esN-4i-MBg" secondAttribute="top" constant="11" id="4IY-hN-peG"/>
+                                        <constraint firstAttribute="bottom" secondItem="n70-Dg-xjT" secondAttribute="bottom" constant="11" id="G9O-Qy-lhx"/>
+                                        <constraint firstAttribute="bottomMargin" secondItem="5R6-kR-K5w" secondAttribute="bottom" constant="2" id="SmF-b7-zgi"/>
+                                        <constraint firstItem="5R6-kR-K5w" firstAttribute="leading" secondItem="n70-Dg-xjT" secondAttribute="trailing" constant="20" id="Wwv-cL-XxL"/>
+                                        <constraint firstItem="n70-Dg-xjT" firstAttribute="leading" secondItem="esN-4i-MBg" secondAttribute="leading" constant="12" id="g4K-ec-KRf"/>
+                                        <constraint firstAttribute="trailingMargin" secondItem="5R6-kR-K5w" secondAttribute="trailing" constant="12" id="hiQ-zd-3Td"/>
+                                        <constraint firstItem="5R6-kR-K5w" firstAttribute="top" secondItem="esN-4i-MBg" secondAttribute="topMargin" constant="2" id="lvo-k2-ohH"/>
+                                    </constraints>
                                 </tableViewCellContentView>
+                                <connections>
+                                    <outlet property="img" destination="n70-Dg-xjT" id="Xtu-oF-pPD"/>
+                                    <outlet property="lbl" destination="5R6-kR-K5w" id="l6O-hJ-YN0"/>
+                                </connections>
                             </tableViewCell>
                         </prototypes>
                         <connections>
@@ -47,11 +74,11 @@
                             <outlet property="delegate" destination="L25-s7-fIR" id="bIy-uI-m5Y"/>
                         </connections>
                     </tableView>
-                    <tabBarItem key="tabBarItem" title="Главная" id="2Zy-7a-9Xm"/>
+                    <tabBarItem key="tabBarItem" title="" image="homekit" catalog="system" id="2Zy-7a-9Xm"/>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Mek-Wa-in1" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1444" y="-756"/>
+            <point key="canvasLocation" x="1443.5114503816794" y="-756.33802816901414"/>
         </scene>
         <!--Tab Bar Controller-->
         <scene sceneID="Nd2-UN-6i8">
@@ -62,6 +89,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="393" height="49"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <color key="tintColor" systemColor="systemYellowColor"/>
                     </tabBar>
                     <connections>
                         <segue destination="L25-s7-fIR" kind="relationship" relationship="viewControllers" id="18V-KB-ILK"/>
@@ -72,7 +100,7 @@
             </objects>
             <point key="canvasLocation" x="540" y="-96"/>
         </scene>
-        <!--Все-->
+        <!--SecondVC-->
         <scene sceneID="4eV-Bh-8v3">
             <objects>
                 <viewController storyboardIdentifier="SecondVC" id="bK0-RC-IaV" customClass="SecondVC" customModule="Read_Watch" customModuleProvider="target" sceneMemberID="viewController">
@@ -143,7 +171,7 @@
                             <constraint firstItem="CBM-2l-ofI" firstAttribute="trailing" secondItem="84E-Rc-rOO" secondAttribute="trailing" constant="10" id="qrM-F6-neM"/>
                         </constraints>
                     </view>
-                    <tabBarItem key="tabBarItem" title="Все" id="4Wd-cP-tpf"/>
+                    <tabBarItem key="tabBarItem" title="" image="exclamationmark.icloud" catalog="system" id="4Wd-cP-tpf"/>
                     <connections>
                         <outlet property="searchBar" destination="mfI-9s-BpU" id="nKe-xX-qCd"/>
                         <outlet property="segmentedControl" destination="MpY-cj-4gz" id="6hO-1b-Bu0"/>
@@ -156,8 +184,13 @@
         </scene>
     </scenes>
     <resources>
+        <image name="exclamationmark.icloud" catalog="system" width="128" height="90"/>
+        <image name="homekit" catalog="system" width="128" height="104"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+        <systemColor name="systemYellowColor">
+            <color red="1" green="0.80000000000000004" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
     </resources>
 </document>
