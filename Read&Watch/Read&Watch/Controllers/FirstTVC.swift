@@ -16,12 +16,10 @@ final class FirstTVC: UITableViewController {
     }
     
     //MARK: - Properties
-    
     private let categories = BooksAndMovies.allCases
     private let sections = Sections.allCases
 
     //MARK: - Life circle TVC
-
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
@@ -33,10 +31,7 @@ final class FirstTVC: UITableViewController {
         tabBarController?.navigationController?.navigationBar.prefersLargeTitles = true
     }
     
-    
-
     // MARK: - Table view data source and delegate
-
     override func numberOfSections(in tableView: UITableView) -> Int { sections.count }
     override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return section == 0 ? 80 : 20
@@ -107,7 +102,7 @@ final class FirstTVC: UITableViewController {
             navigationController?.pushViewController(vc, animated: true)
             vc.addItem()
         case .whatToDo:
-            break
+            presentAlert("Данная функция пока не доступна!)")
         }
     }
     

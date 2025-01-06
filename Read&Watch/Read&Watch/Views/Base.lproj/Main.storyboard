@@ -94,6 +94,7 @@
                     <connections>
                         <segue destination="L25-s7-fIR" kind="relationship" relationship="viewControllers" id="18V-KB-ILK"/>
                         <segue destination="bK0-RC-IaV" kind="relationship" relationship="viewControllers" id="fnh-kv-l0C"/>
+                        <segue destination="DsR-0Q-PhQ" kind="relationship" relationship="viewControllers" id="4Yy-Hj-t0g"/>
                     </connections>
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="osB-Qw-BA3" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -182,10 +183,40 @@
             </objects>
             <point key="canvasLocation" x="1444" y="-97"/>
         </scene>
+        <!--TherdTVC-->
+        <scene sceneID="AUO-WJ-Pyq">
+            <objects>
+                <tableViewController storyboardIdentifier="TherdTVC" id="DsR-0Q-PhQ" customClass="TherdTVC" customModule="Read_Watch" customModuleProvider="target" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" id="XbT-dT-S8h">
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <prototypes>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" id="TG9-OG-J5R">
+                                <rect key="frame" x="0.0" y="50" width="393" height="43.666667938232422"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="TG9-OG-J5R" id="yz6-DF-6Mq">
+                                    <rect key="frame" x="0.0" y="0.0" width="393" height="43.666667938232422"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                </tableViewCellContentView>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="DsR-0Q-PhQ" id="EYw-25-Ph9"/>
+                            <outlet property="delegate" destination="DsR-0Q-PhQ" id="Hd0-bn-gzf"/>
+                        </connections>
+                    </tableView>
+                    <tabBarItem key="tabBarItem" title="" image="livephoto.play" catalog="system" id="uT9-K7-RlN"/>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Ohq-hG-OWy" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1467" y="566"/>
+        </scene>
     </scenes>
     <resources>
         <image name="exclamationmark.icloud" catalog="system" width="128" height="90"/>
         <image name="homekit" catalog="system" width="128" height="104"/>
+        <image name="livephoto.play" catalog="system" width="128" height="124"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
