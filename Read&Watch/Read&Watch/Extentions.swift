@@ -15,6 +15,6 @@ extension UIViewController {
         alert.addAction(UIAlertAction(title: "Понял",
                                       style: .cancel))
         self.present(alert, animated: true)
-        navigationController?.popToRootViewController(animated: true)
+        tabBarController?.selectedIndex = 0
     }
 }
