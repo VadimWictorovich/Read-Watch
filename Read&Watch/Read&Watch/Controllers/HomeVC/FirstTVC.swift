@@ -8,7 +8,6 @@
 import UIKit
 
 final class FirstTVC: UITableViewController {
-    
     enum Sections: String, CaseIterable {
         case categories = "Категории"
         case add = "Добавить"
@@ -18,6 +17,8 @@ final class FirstTVC: UITableViewController {
     //MARK: - Properties
     private let categories = BooksAndMovies.allCases
     private let sections = Sections.allCases
+    private weak var tabBarCont: TabBarControoler?
+    
 
     //MARK: - Life circle TVC
     override func viewDidLoad() {
@@ -25,18 +26,21 @@ final class FirstTVC: UITableViewController {
         setupUI()
     }
     
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        tabBarController?.navigationItem.rightBarButtonItem?.isHidden = true
         tabBarController?.navigationItem.title = "Книги и фильмы"
         tabBarController?.navigationController?.navigationBar.prefersLargeTitles = true
     }
     
+    
     // MARK: - Table view data source and delegate
     override func numberOfSections(in tableView: UITableView) -> Int { sections.count }
+    
     override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return section == 0 ? 80 : 20
     }
-    //override func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat { 50 }
     
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         switch sections[section] {
@@ -86,28 +90,29 @@ final class FirstTVC: UITableViewController {
         return cell
     }
     
-    
     // TODO: доделать переходы
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let sb = UIStoryboard(name: "Main", bundle: nil)
-        guard let vc = sb.instantiateViewController(withIdentifier: "SecondVC") as? SecondVC else { return }
+        guard let vc1 = tabBarController?.viewControllers?[1] as? SecondVC else { return }
         switch sections[indexPath.section] {
         case .categories:
-            navigationController?.pushViewController(vc, animated: true)
+            //tabBarController?.selectedIndex = 1
+            switchToTab1(1, animationOptions: .transitionCurlDown)
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                vc.segmentedControl.selectedSegmentIndex = indexPath.row
-                vc.scrollToSection(section: indexPath.row)
+                vc1.segmentedControl.selectedSegmentIndex = indexPath.row
+                vc1.scrollToSection(section: indexPath.row)
             }
         case .add:
-            navigationController?.pushViewController(vc, animated: true)
-            vc.addItem()
+            switchToTab1(1, animationOptions: .transitionFlipFromRight)
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                vc1.addItem()
+            }
         case .whatToDo:
-            presentAlert("Данная функция пока не доступна!)")
+            //presentAlert("Данная функция пока не доступна!)")
+            presentAlert("Данная функция пока не доступна!)", false)
         }
     }
     
     // MARK: - Methods
-    
     private func setupUI() {
         tabBarController?.tabBar.tintColor = #colorLiteral(red: 0.5808190107, green: 0.0884276256, blue: 0.3186392188, alpha: 1)
         tableView.isScrollEnabled = false

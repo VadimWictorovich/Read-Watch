@@ -21,29 +21,32 @@ final class SecondVC: UIViewController, UITableViewDataSource, UITableViewDelega
     }()
     private var books: [Book] = []
     private var movies: [Movie] = []
+    //private weak var tabBarCont: TabBarControoler?
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var segmentedControl: UISegmentedControl!
     @IBOutlet weak var searchBar: UISearchBar!
     
     
     // MARK: - Life cirle
-
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
         getData()
+        setingsNavBut()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        tabBarController?.navigationItem.rightBarButtonItem?.isHidden = false
         tabBarController?.navigationItem.title = "Весь контент"
         tabBarController?.navigationController?.navigationBar.prefersLargeTitles = false
         setupSegmentedControl()
     }
     
     // MARK: - Table view data source and delegate
-    
     func numberOfSections(in tableView: UITableView) -> Int { sections.count }
+    
+    
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         switch sections[section] {
         case .books:
@@ -52,8 +55,12 @@ final class SecondVC: UIViewController, UITableViewDataSource, UITableViewDelega
             return movies.isEmpty ? "Данные о фильмах отсутствуют" : "Фильмы (\(movies.count))"
         }
     }
+    
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat { 30 }
+    
+    
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat { 80 }
+    
     
     func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
         guard let header = view as? UITableViewHeaderFooterView else { return }
@@ -69,6 +76,7 @@ final class SecondVC: UIViewController, UITableViewDataSource, UITableViewDelega
             return movies.count
         }
     }
+    
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
@@ -91,8 +99,8 @@ final class SecondVC: UIViewController, UITableViewDataSource, UITableViewDelega
         return cell
     }
     
-    //MARK: - CoreData
     
+    //MARK: - CoreData
     private func loadBooks(with request: NSFetchRequest<Book> = Book.fetchRequest()) {
         do {
             books = try context.fetch(request)
@@ -102,6 +110,7 @@ final class SecondVC: UIViewController, UITableViewDataSource, UITableViewDelega
         }
     }
     
+    
     private func loadMovies(with request: NSFetchRequest<Movie> = Movie.fetchRequest()) {
         do {
             movies = try context.fetch(request)
@@ -110,6 +119,7 @@ final class SecondVC: UIViewController, UITableViewDataSource, UITableViewDelega
             fatalError("-- ошибка метода \(#function) класса SecondVC: \(error)")
         }
     }
+    
     
     private func saveData() {
         do {
@@ -123,11 +133,13 @@ final class SecondVC: UIViewController, UITableViewDataSource, UITableViewDelega
         }
     }
     
+    
     private func getData() {
         loadBooks()
         loadMovies()
         tableView.reloadData()
     }
+    
     
     // MARK: - UI Methods
     
@@ -137,27 +149,27 @@ final class SecondVC: UIViewController, UITableViewDataSource, UITableViewDelega
         tableView.dataSource = self
         tableView.delegate = self
         searchBar.delegate = self
-        tabBarController?.navigationItem.rightBarButtonItem = addButton
-        addButton.target = self
-        addButton.action = #selector(addItem)
     }
+    
     
     private func setupSegmentedControl() {
         segmentedControl.addTarget(self, action: #selector(segmentChanged(_:)), for: .valueChanged)
     }
+    
     
     func scrollToSection(section: Int) {
         let indexPath = IndexPath(row: 0, section: section)
         tableView.scrollToRow(at: indexPath, at: .top, animated: true)
     }
     
+    
     @objc private func segmentChanged(_ sender: UISegmentedControl) {
         let section = sender.selectedSegmentIndex
         scrollToSection(section: section)
     }
     
-    //MARK: - Alert methods
     
+    //MARK: - Alert methods
     @objc func addItem() {
         let alert = UIAlertController(title: "ДОБАВИТЬ",
                                       message: nil,
@@ -173,6 +185,7 @@ final class SecondVC: UIViewController, UITableViewDataSource, UITableViewDelega
         alert.addAction(UIAlertAction(title: "Отмена", style: .cancel))
         self.present(alert, animated: true)
     }
+    
     
     private func addBook() {
         let alert = UIAlertController(title: "Добавить книгу",
@@ -202,6 +215,7 @@ final class SecondVC: UIViewController, UITableViewDataSource, UITableViewDelega
         self.present(alert, animated: true)
     }
     
+    
     private func addMovie() {
         let alert = UIAlertController(title: "Добавить фильм",
                                       message: "Введите необходимые данные о фильме",
@@ -228,5 +242,12 @@ final class SecondVC: UIViewController, UITableViewDataSource, UITableViewDelega
         }))
         alert.addAction(UIAlertAction(title: "Отмена", style: .cancel))
         self.present(alert, animated: true)
+    }
+    
+    
+    private func setingsNavBut() {
+        tabBarController?.navigationItem.rightBarButtonItem = addButton
+        addButton.target = self
+        addButton.action = #selector(addItem)
     }
 }
