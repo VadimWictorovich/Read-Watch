@@ -18,7 +18,7 @@ class ThirdTVC: UITableViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        presentAlert("Данный просмотренного и прочитанного пуст !)")
+        presentAlert("Данный просмотренного и прочитанного пуст !)", true)
     }
 
     // MARK: - Table view data source

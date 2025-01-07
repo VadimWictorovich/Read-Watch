@@ -95,16 +95,20 @@ final class FirstTVC: UITableViewController {
         guard let vc1 = tabBarController?.viewControllers?[1] as? SecondVC else { return }
         switch sections[indexPath.section] {
         case .categories:
-            tabBarController?.selectedIndex = 1
+            //tabBarController?.selectedIndex = 1
+            switchToTab1(1, animationOptions: .transitionCurlDown)
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                 vc1.segmentedControl.selectedSegmentIndex = indexPath.row
                 vc1.scrollToSection(section: indexPath.row)
             }
         case .add:
-            tabBarController?.selectedIndex = 1
-            vc1.addItem()
+            switchToTab1(1, animationOptions: .transitionFlipFromRight)
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                vc1.addItem()
+            }
         case .whatToDo:
-            presentAlert("Данная функция пока не доступна!)")
+            //presentAlert("Данная функция пока не доступна!)")
+            presentAlert("Данная функция пока не доступна!)", false)
         }
     }
     
