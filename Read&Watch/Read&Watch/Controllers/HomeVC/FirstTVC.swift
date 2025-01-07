@@ -8,7 +8,6 @@
 import UIKit
 
 final class FirstTVC: UITableViewController {
-    
     enum Sections: String, CaseIterable {
         case categories = "Категории"
         case add = "Добавить"
@@ -18,20 +17,23 @@ final class FirstTVC: UITableViewController {
     //MARK: - Properties
     private let categories = BooksAndMovies.allCases
     private let sections = Sections.allCases
+    private weak var tabBarCont: TabBarControoler?
+    
 
     //MARK: - Life circle TVC
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
-        print("*******количество контроллеров: \(tabBarController?.viewControllers?.count ?? 0)")
     }
+    
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        tabBarController?.navigationItem.rightBarButtonItem?.isHidden = true
         tabBarController?.navigationItem.title = "Книги и фильмы"
         tabBarController?.navigationController?.navigationBar.prefersLargeTitles = true
-        print("********* количество секций таббра: \(tabBarController?.tabBar.items?.count ?? 0)")
     }
+    
     
     // MARK: - Table view data source and delegate
     override func numberOfSections(in tableView: UITableView) -> Int { sections.count }
