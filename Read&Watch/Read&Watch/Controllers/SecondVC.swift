@@ -100,6 +100,23 @@ final class SecondVC: UIViewController, UITableViewDataSource, UITableViewDelega
     }
     
     
+    func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool { true }
+    
+    
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        if editingStyle == .delete {
+            switch sections[indexPath.section] {
+            case .books:
+                let bookToDelete = books[indexPath.row]
+                deleteBook(by: bookToDelete.id!)
+            case .movies:
+                let movieToDelete = movies[indexPath.row]
+                deleteMovie(by: movieToDelete.id!)
+            }
+        }
+    }
+    
+    
     //MARK: - CoreData
     private func loadBooks(with request: NSFetchRequest<Book> = Book.fetchRequest()) {
         do {
@@ -142,7 +159,6 @@ final class SecondVC: UIViewController, UITableViewDataSource, UITableViewDelega
     
     
     // MARK: - UI Methods
-    
     private func setupUI() {
         navigationController?.navigationBar.prefersLargeTitles = false
         searchBar.placeholder = "Поиск..."
@@ -154,6 +170,13 @@ final class SecondVC: UIViewController, UITableViewDataSource, UITableViewDelega
     
     private func setupSegmentedControl() {
         segmentedControl.addTarget(self, action: #selector(segmentChanged(_:)), for: .valueChanged)
+    }
+    
+    
+    private func setingsNavBut() {
+        tabBarController?.navigationItem.rightBarButtonItem = addButton
+        addButton.target = self
+        addButton.action = #selector(addItem)
     }
     
     
@@ -187,6 +210,7 @@ final class SecondVC: UIViewController, UITableViewDataSource, UITableViewDelega
     }
     
     
+    //MARK: - Методы по добавлению экземпляров книг и фильмов
     private func addBook() {
         let alert = UIAlertController(title: "Добавить книгу",
                                       message: "Введите необходимые данные о книге",
@@ -206,6 +230,7 @@ final class SecondVC: UIViewController, UITableViewDataSource, UITableViewDelega
                 newBook.name = textName
                 newBook.author = textAuthor
                 newBook.read = false
+                newBook.id = UUID()
                 self.books.append(newBook)
                 self.tableView.insertRows(at: [IndexPath(row: self.books.count - 1, section: 0)], with: .automatic)
                 self.saveData()
@@ -235,6 +260,7 @@ final class SecondVC: UIViewController, UITableViewDataSource, UITableViewDelega
                 newMovie.name = textName
                 newMovie.genre = textGenre
                 newMovie.watched = false
+                newMovie.id = UUID()
                 self.movies.append(newMovie)
                 self.tableView.insertRows(at: [IndexPath(row: self.movies.count - 1, section: 1)], with: .automatic)
                 self.saveData()
@@ -244,10 +270,23 @@ final class SecondVC: UIViewController, UITableViewDataSource, UITableViewDelega
         self.present(alert, animated: true)
     }
     
-    
-    private func setingsNavBut() {
-        tabBarController?.navigationItem.rightBarButtonItem = addButton
-        addButton.target = self
-        addButton.action = #selector(addItem)
+    //MARK: - Методы по удалению экземпляров книг и фильмов
+    private func deleteBook(by id: UUID) {
+        guard let index = books.firstIndex(where: { $0.id == id }) else { print("ID для удаления книги не найден"); return }
+        let bookDelete = books[index]
+        context.delete(bookDelete)
+        saveData()
+        books.remove(at: index)
+        tableView.deleteRows(at: [IndexPath(row: index, section: 0)], with: .fade)
     }
+    
+    private func deleteMovie(by id: UUID) {
+        guard let index = movies.firstIndex(where: { $0.id == id }) else { print("ID для удаления фильма не найден"); return }
+        let movieDelete = movies[index]
+        context.delete(movieDelete)
+        saveData()
+        movies.remove(at: index)
+        tableView.deleteRows(at: [IndexPath(row: index, section: 1)], with: .fade)
+    }
+
 }
