@@ -21,6 +21,12 @@ final class SecondVC: UIViewController, UITableViewDataSource, UITableViewDelega
     }()
     private var books: [Book] = []
     private var movies: [Movie] = []
+    private var incompleteBooks: [Book] {
+        return books.filter { !$0.read }
+    }
+    private var incompleteMovies: [Movie] {
+        return movies.filter { !$0.watched }
+    }
     //private weak var tabBarCont: TabBarControoler?
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var segmentedControl: UISegmentedControl!
@@ -50,9 +56,9 @@ final class SecondVC: UIViewController, UITableViewDataSource, UITableViewDelega
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         switch sections[section] {
         case .books:
-            return books.isEmpty ? "Данные о книгах отсутствуют" : "Книги (\(books.count))"
+            return incompleteBooks.isEmpty ? "Данные о книгах отсутствуют" : "Книги (\(incompleteBooks.count))"
         case .movies:
-            return movies.isEmpty ? "Данные о фильмах отсутствуют" : "Фильмы (\(movies.count))"
+            return incompleteMovies.isEmpty ? "Данные о фильмах отсутствуют" : "Фильмы (\(incompleteMovies.count))"
         }
     }
     
@@ -71,9 +77,9 @@ final class SecondVC: UIViewController, UITableViewDataSource, UITableViewDelega
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch sections[section] {
         case .books:
-            return books.count
+            return incompleteBooks.count
         case .movies:
-            return movies.count
+            return incompleteMovies.count
         }
     }
     
@@ -84,13 +90,13 @@ final class SecondVC: UIViewController, UITableViewDataSource, UITableViewDelega
         cell.imageView?.tintColor = #colorLiteral(red: 1, green: 0.5781051517, blue: 0, alpha: 1)
         switch sections[indexPath.section] {
         case .books:
-            let book = books[indexPath.row]
+            let book = incompleteBooks[indexPath.row]
             // book.fill
             cell.textLabel?.text = book.name
             cell.detailTextLabel?.text = book.author
             cell.imageView?.image = UIImage(systemName: "book")
         case .movies:
-            let movie = movies[indexPath.row]
+            let movie = incompleteMovies[indexPath.row]
             // movieclapper
             cell.textLabel?.text = movie.name
             cell.detailTextLabel?.text = movie.genre
@@ -107,10 +113,10 @@ final class SecondVC: UIViewController, UITableViewDataSource, UITableViewDelega
         if editingStyle == .delete {
             switch sections[indexPath.section] {
             case .books:
-                let bookToDelete = books[indexPath.row]
+                let bookToDelete = incompleteBooks[indexPath.row]
                 deleteBook(by: bookToDelete.id!)
             case .movies:
-                let movieToDelete = movies[indexPath.row]
+                let movieToDelete = incompleteMovies[indexPath.row]
                 deleteMovie(by: movieToDelete.id!)
             }
         }
@@ -118,35 +124,23 @@ final class SecondVC: UIViewController, UITableViewDataSource, UITableViewDelega
     
     //здесь нужно забросить на 3ий экран
     func tableView(_ tableView: UITableView, leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
-        let index = indexPath.row
         let indSect = indexPath.section
         guard let vc = tabBarController?.viewControllers?[2] as? ThirdTVC else { return nil }
-        let nowAction = UIContextualAction(style: .normal, title: setTitleSwipeAction(indSect, true)) { [weak self] (_, _, _) in
-            self?.switchToTab1(2, animationOptions: .transitionCrossDissolve)
-            
-        }
-        nowAction.backgroundColor = #colorLiteral(red: 0.1764705926, green: 0.4980392158, blue: 0.7568627596, alpha: 1)
-        let completeAction = UIContextualAction(style: .normal, title: setTitleSwipeAction(indSect, false)) { [weak self] _, _, _ in
+        let completeAction = UIContextualAction(style: .normal, title: setTitleSwipeAction(indSect)) { [weak self] _, _, _ in
             self?.switchToTab1(2, animationOptions: .transitionCrossDissolve)
         }
         completeAction.backgroundColor = #colorLiteral(red: 0, green: 0.5907812036, blue: 0.5686688286, alpha: 1)
-        let configuration = UISwipeActionsConfiguration(actions: [nowAction, completeAction])
+        let configuration = UISwipeActionsConfiguration(actions: [completeAction])
         return configuration
     }
     
-    private func setTitleSwipeAction (_ section: Int,_ now: Bool) -> String {
-        if now {
-            switch section {
-            case 0: return "Читаю"
-            case 1: return "Смотрю"
-            default: return "Ошибка" }
-        } else {
+    private func setTitleSwipeAction (_ section: Int) -> String {
             switch section {
             case 0: return "Прочитал"
             case 1: return "Посмотрел"
             default: return "Ошибка" }
-        }
     }
+    
     
     
     //MARK: - CoreData
@@ -264,7 +258,7 @@ final class SecondVC: UIViewController, UITableViewDataSource, UITableViewDelega
                 newBook.read = false
                 newBook.id = UUID()
                 self.books.append(newBook)
-                self.tableView.insertRows(at: [IndexPath(row: self.books.count - 1, section: 0)], with: .automatic)
+                self.tableView.insertRows(at: [IndexPath(row: self.incompleteBooks.count - 1, section: 0)], with: .automatic)
                 self.saveData()
             }
         }))
@@ -294,7 +288,7 @@ final class SecondVC: UIViewController, UITableViewDataSource, UITableViewDelega
                 newMovie.watched = false
                 newMovie.id = UUID()
                 self.movies.append(newMovie)
-                self.tableView.insertRows(at: [IndexPath(row: self.movies.count - 1, section: 1)], with: .automatic)
+                self.tableView.insertRows(at: [IndexPath(row: self.incompleteMovies.count - 1, section: 1)], with: .automatic)
                 self.saveData()
             }
         }))
@@ -324,24 +318,21 @@ final class SecondVC: UIViewController, UITableViewDataSource, UITableViewDelega
     
     
     //MARK: - Методы по переносу экземпляров книг и фильмов на третий экран
-    /*
+    
     private func goBookToThird(by id: UUID) {
         guard let index = books.firstIndex(where: { $0.id == id }) else { print("ID для удаления книги не найден"); return }
-        let bookDelete = books[index]
-        context.delete(bookDelete)
+        let bookGo = books[index]
+        bookGo.read = true
         saveData()
-        books.remove(at: index)
         tableView.deleteRows(at: [IndexPath(row: index, section: 0)], with: .fade)
     }
     
+    
     private func goMovieToThird(by id: UUID) {
         guard let index = movies.firstIndex(where: { $0.id == id }) else { print("ID для удаления фильма не найден"); return }
-        let movieDelete = movies[index]
-        context.delete(movieDelete)
+        let movieGo = movies[index]
+        movieGo.watched = true
         saveData()
-        movies.remove(at: index)
         tableView.deleteRows(at: [IndexPath(row: index, section: 1)], with: .fade)
     }
-     */
-
 }
