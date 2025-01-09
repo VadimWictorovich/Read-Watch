@@ -102,7 +102,7 @@ final class SecondVC: UIViewController, UITableViewDataSource, UITableViewDelega
     
     func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool { true }
     
-    
+    //удаление ячейки
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
             switch sections[indexPath.section] {
@@ -113,6 +113,38 @@ final class SecondVC: UIViewController, UITableViewDataSource, UITableViewDelega
                 let movieToDelete = movies[indexPath.row]
                 deleteMovie(by: movieToDelete.id!)
             }
+        }
+    }
+    
+    //здесь нужно забросить на 3ий экран
+    func tableView(_ tableView: UITableView, leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        let index = indexPath.row
+        let indSect = indexPath.section
+        guard let vc = tabBarController?.viewControllers?[2] as? ThirdTVC else { return nil }
+        let nowAction = UIContextualAction(style: .normal, title: setTitleSwipeAction(indSect, true)) { [weak self] (_, _, _) in
+            self?.switchToTab1(2, animationOptions: .transitionCrossDissolve)
+            
+        }
+        nowAction.backgroundColor = #colorLiteral(red: 0.1764705926, green: 0.4980392158, blue: 0.7568627596, alpha: 1)
+        let completeAction = UIContextualAction(style: .normal, title: setTitleSwipeAction(indSect, false)) { [weak self] _, _, _ in
+            self?.switchToTab1(2, animationOptions: .transitionCrossDissolve)
+        }
+        completeAction.backgroundColor = #colorLiteral(red: 0, green: 0.5907812036, blue: 0.5686688286, alpha: 1)
+        let configuration = UISwipeActionsConfiguration(actions: [nowAction, completeAction])
+        return configuration
+    }
+    
+    private func setTitleSwipeAction (_ section: Int,_ now: Bool) -> String {
+        if now {
+            switch section {
+            case 0: return "Читаю"
+            case 1: return "Смотрю"
+            default: return "Ошибка" }
+        } else {
+            switch section {
+            case 0: return "Прочитал"
+            case 1: return "Посмотрел"
+            default: return "Ошибка" }
         }
     }
     
@@ -270,6 +302,7 @@ final class SecondVC: UIViewController, UITableViewDataSource, UITableViewDelega
         self.present(alert, animated: true)
     }
     
+    
     //MARK: - Методы по удалению экземпляров книг и фильмов
     private func deleteBook(by id: UUID) {
         guard let index = books.firstIndex(where: { $0.id == id }) else { print("ID для удаления книги не найден"); return }
@@ -288,5 +321,27 @@ final class SecondVC: UIViewController, UITableViewDataSource, UITableViewDelega
         movies.remove(at: index)
         tableView.deleteRows(at: [IndexPath(row: index, section: 1)], with: .fade)
     }
+    
+    
+    //MARK: - Методы по переносу экземпляров книг и фильмов на третий экран
+    /*
+    private func goBookToThird(by id: UUID) {
+        guard let index = books.firstIndex(where: { $0.id == id }) else { print("ID для удаления книги не найден"); return }
+        let bookDelete = books[index]
+        context.delete(bookDelete)
+        saveData()
+        books.remove(at: index)
+        tableView.deleteRows(at: [IndexPath(row: index, section: 0)], with: .fade)
+    }
+    
+    private func goMovieToThird(by id: UUID) {
+        guard let index = movies.firstIndex(where: { $0.id == id }) else { print("ID для удаления фильма не найден"); return }
+        let movieDelete = movies[index]
+        context.delete(movieDelete)
+        saveData()
+        movies.remove(at: index)
+        tableView.deleteRows(at: [IndexPath(row: index, section: 1)], with: .fade)
+    }
+     */
 
 }

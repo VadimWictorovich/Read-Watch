@@ -7,8 +7,14 @@
 
 import UIKit
 
-class ThirdTVC: UITableViewController {
+final class ThirdTVC: UITableViewController {
 
+    private let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+    var booksReadingNow: [Book] = []
+    var booksComplete: [Book] = []
+    var movieWathedNow: [Movie] = []
+    var movieComplete: [Movie] = []
+    
     
     //MARK: life circle VC
     override func viewDidLoad() {
