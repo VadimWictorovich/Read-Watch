@@ -183,7 +183,7 @@ final class SecondVC: UIViewController, UITableViewDataSource, UITableViewDelega
     }
     
     // удалить
-    private func saveData1() {
+    private func saveForAsyncMethods() {
         do {
             try context.save()
         } catch {
@@ -368,7 +368,7 @@ final class SecondVC: UIViewController, UITableViewDataSource, UITableViewDelega
         //let sArr = array
         let deleteItem = array[index]
         context.delete(deleteItem)
-        saveData1()
+        saveForAsyncMethods()
         array.remove(at: index)
         DispatchQueue.main.async { [weak self] in
             self?.tableView.deleteRows(at: [IndexPath(row: index, section: section)], with: .fade)
@@ -381,7 +381,7 @@ final class SecondVC: UIViewController, UITableViewDataSource, UITableViewDelega
     private func markCompleteItem<T: NSManagedObject>(_ item: T, witchKey keyPath: ReferenceWritableKeyPath<T, Bool>,from array: inout [T], in section: Int) {
         guard let index = array.firstIndex(where: { $0 == item} ) else { print ("Нет объекта для переносаа в категорию ВЫПОЛНЕНО"); return }
             array[index][keyPath: keyPath] = true
-            saveData1()
+            saveForAsyncMethods()
             DispatchQueue.main.async { [weak self] in
                 self?.tableView.deleteRows(at: [IndexPath(row: index, section: section)], with: .fade)
                 self?.tableView.reloadData()
