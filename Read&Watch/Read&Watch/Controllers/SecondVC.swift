@@ -11,7 +11,6 @@ import CoreData
 final class SecondVC: UIViewController, UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate {
     
     // MARK: - Properties
-    
     private let sections = BooksAndMovies.allCases
     private let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     private let addButton: UIBarButtonItem = {
@@ -19,8 +18,14 @@ final class SecondVC: UIViewController, UITableViewDataSource, UITableViewDelega
         but.image = UIImage(systemName: "plus")
         return but
     }()
-    private var books: [Book] = []
-    private var movies: [Movie] = []
+    var books: [Book] = []
+    var movies: [Movie] = []
+    private var incompleteBooks: [Book] {
+        return books.filter { !$0.read }
+    }
+    private var incompleteMovies: [Movie] {
+        return movies.filter { !$0.watched }
+    }
     //private weak var tabBarCont: TabBarControoler?
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var segmentedControl: UISegmentedControl!
@@ -50,9 +55,9 @@ final class SecondVC: UIViewController, UITableViewDataSource, UITableViewDelega
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         switch sections[section] {
         case .books:
-            return books.isEmpty ? "Данные о книгах отсутствуют" : "Книги (\(books.count))"
+            return incompleteBooks.isEmpty ? "Данные о книгах отсутствуют" : "Книги (\(incompleteBooks.count))"
         case .movies:
-            return movies.isEmpty ? "Данные о фильмах отсутствуют" : "Фильмы (\(movies.count))"
+            return incompleteMovies.isEmpty ? "Данные о фильмах отсутствуют" : "Фильмы (\(incompleteMovies.count))"
         }
     }
     
@@ -71,9 +76,9 @@ final class SecondVC: UIViewController, UITableViewDataSource, UITableViewDelega
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch sections[section] {
         case .books:
-            return books.count
+            return incompleteBooks.count
         case .movies:
-            return movies.count
+            return incompleteMovies.count
         }
     }
     
@@ -84,13 +89,13 @@ final class SecondVC: UIViewController, UITableViewDataSource, UITableViewDelega
         cell.imageView?.tintColor = #colorLiteral(red: 1, green: 0.5781051517, blue: 0, alpha: 1)
         switch sections[indexPath.section] {
         case .books:
-            let book = books[indexPath.row]
+            let book = incompleteBooks[indexPath.row]
             // book.fill
             cell.textLabel?.text = book.name
             cell.detailTextLabel?.text = book.author
             cell.imageView?.image = UIImage(systemName: "book")
         case .movies:
-            let movie = movies[indexPath.row]
+            let movie = incompleteMovies[indexPath.row]
             // movieclapper
             cell.textLabel?.text = movie.name
             cell.detailTextLabel?.text = movie.genre
@@ -102,18 +107,45 @@ final class SecondVC: UIViewController, UITableViewDataSource, UITableViewDelega
     
     func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool { true }
     
-    
+    //удаление ячейки
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
             switch sections[indexPath.section] {
             case .books:
-                let bookToDelete = books[indexPath.row]
-                deleteBook(by: bookToDelete.id!)
+                let bookToDelete = incompleteBooks[indexPath.row]
+                deleteItem(bookToDelete, from: &books, in: 0)
             case .movies:
-                let movieToDelete = movies[indexPath.row]
-                deleteMovie(by: movieToDelete.id!)
+                let movieToDelete = incompleteMovies[indexPath.row]
+                deleteItem(movieToDelete, from: &movies, in: 1)
             }
         }
+    }
+    
+    
+    func tableView(_ tableView: UITableView, leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        let indSect = indexPath.section
+        let completeAction = UIContextualAction(style: .normal, title: setTitleSwipeAction(indSect)) { [weak self] _, _, _ in
+            guard let self else { return }
+            switch sections[indexPath.section] {
+            case .books:
+                let goBook = self.incompleteBooks[indexPath.row]
+                markCompleteItem(goBook, witchKey: \.read, from: &books, in: 0)
+            case .movies:
+                let goMovie = self.incompleteMovies[indexPath.row]
+                markCompleteItem(goMovie, witchKey: \.watched, from: &movies, in: 1)
+            }
+        }
+        completeAction.backgroundColor = #colorLiteral(red: 0, green: 0.5907812036, blue: 0.5686688286, alpha: 1)
+        let configuration = UISwipeActionsConfiguration(actions: [completeAction])
+        return configuration
+    }
+    
+    
+    private func setTitleSwipeAction (_ section: Int) -> String {
+            switch section {
+            case 0: return "Прочитал"
+            case 1: return "Посмотрел"
+            default: return "Ошибка" }
     }
     
     
@@ -141,9 +173,19 @@ final class SecondVC: UIViewController, UITableViewDataSource, UITableViewDelega
     private func saveData() {
         do {
             try context.save()
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                self.tableView.reloadData()
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [weak self] in
+                self?.tableView.reloadData()
             }
+        } catch {
+            let error = error as NSError
+            fatalError("-- ошибка метода \(#function) класса SecondVC: \(error)")
+        }
+    }
+    
+    // удалить
+    private func saveForAsyncMethods() {
+        do {
+            try context.save()
         } catch {
             let error = error as NSError
             fatalError("-- ошибка метода \(#function) класса SecondVC: \(error)")
@@ -232,7 +274,7 @@ final class SecondVC: UIViewController, UITableViewDataSource, UITableViewDelega
                 newBook.read = false
                 newBook.id = UUID()
                 self.books.append(newBook)
-                self.tableView.insertRows(at: [IndexPath(row: self.books.count - 1, section: 0)], with: .automatic)
+                self.tableView.insertRows(at: [IndexPath(row: self.incompleteBooks.count - 1, section: 0)], with: .automatic)
                 self.saveData()
             }
         }))
@@ -262,7 +304,7 @@ final class SecondVC: UIViewController, UITableViewDataSource, UITableViewDelega
                 newMovie.watched = false
                 newMovie.id = UUID()
                 self.movies.append(newMovie)
-                self.tableView.insertRows(at: [IndexPath(row: self.movies.count - 1, section: 1)], with: .automatic)
+                self.tableView.insertRows(at: [IndexPath(row: self.incompleteMovies.count - 1, section: 1)], with: .automatic)
                 self.saveData()
             }
         }))
@@ -270,23 +312,97 @@ final class SecondVC: UIViewController, UITableViewDataSource, UITableViewDelega
         self.present(alert, animated: true)
     }
     
-    //MARK: - Методы по удалению экземпляров книг и фильмов
-    private func deleteBook(by id: UUID) {
-        guard let index = books.firstIndex(where: { $0.id == id }) else { print("ID для удаления книги не найден"); return }
-        let bookDelete = books[index]
-        context.delete(bookDelete)
-        saveData()
-        books.remove(at: index)
-        tableView.deleteRows(at: [IndexPath(row: index, section: 0)], with: .fade)
-    }
     
-    private func deleteMovie(by id: UUID) {
-        guard let index = movies.firstIndex(where: { $0.id == id }) else { print("ID для удаления фильма не найден"); return }
-        let movieDelete = movies[index]
-        context.delete(movieDelete)
-        saveData()
-        movies.remove(at: index)
-        tableView.deleteRows(at: [IndexPath(row: index, section: 1)], with: .fade)
+    //MARK: - Методы по удалению экземпляров книг и фильмов
+//    private func deleteBook(by id: UUID) {
+//        guard let index = books.firstIndex(where: { $0.id == id }) else { print("ID для удаления книги не найден"); return }
+//        let bookDelete = books[index]
+//        context.delete(bookDelete)
+//        saveData()
+//        books.remove(at: index)
+//        tableView.deleteRows(at: [IndexPath(row: index, section: 0)], with: .fade)
+//    }
+//    
+//    private func deleteMovie(by id: UUID) {
+//        guard let index = movies.firstIndex(where: { $0.id == id }) else { print("ID для удаления фильма не найден"); return }
+//        let movieDelete = movies[index]
+//        context.delete(movieDelete)
+//        saveData()
+//        movies.remove(at: index)
+//        tableView.deleteRows(at: [IndexPath(row: index, section: 1)], with: .fade)
+//    }
+    
+    
+    // нужно оставить так как это точно рабочий метод
+    /*
+     private func deleteItem<T: NSManagedObject>(_ item: T) {
+         if let index = books.firstIndex(where: { $0 == item } ) {
+             let bookDelete = books[index]
+             context.delete(bookDelete)
+             saveData()
+             books.remove(at: index)
+             tableView.deleteRows(at: [IndexPath(row: index, section: 0)], with: .fade)
+         } else if let index = movies.firstIndex(where: { $0 == item } ) {
+             let movieDelete = movies[index]
+             context.delete(movieDelete)
+             saveData()
+             movies.remove(at: index)
+             tableView.deleteRows(at: [IndexPath(row: index, section: 1)], with: .fade)
+         }
+     }
+     */
+    
+    /*
+     Параметры:
+     1._ item: T:
+        - Это объект, который вы хотите удалить (например, книга или фильм).
+     2. from array: inout [T]:
+        - array — массив, из которого удаляется объект.
+        - inout говорит о том, что массив передается по ссылке и может быть изменен.
+     3. in section: Int:
+        - Номер секции таблицы, чтобы знать, какую строку удалить из tableView.
+     */
+    
+    private func deleteItem<T: NSManagedObject>(_ item: T, from array: inout [T], in section: Int) {
+        guard let index = array.firstIndex(where: { $0 == item} ) else { print ("Нет объекта для удаления"); return }
+        //let sArr = array
+        let deleteItem = array[index]
+        context.delete(deleteItem)
+        saveForAsyncMethods()
+        array.remove(at: index)
+        DispatchQueue.main.async { [weak self] in
+            self?.tableView.deleteRows(at: [IndexPath(row: index, section: section)], with: .fade)
+            self?.tableView.reloadData()
+        }
     }
 
+    
+    //MARK: - Методы по переносу экземпляров книг и фильмов на третий экран
+    private func markCompleteItem<T: NSManagedObject>(_ item: T, witchKey keyPath: ReferenceWritableKeyPath<T, Bool>,from array: inout [T], in section: Int) {
+        guard let index = array.firstIndex(where: { $0 == item} ) else { print ("Нет объекта для переносаа в категорию ВЫПОЛНЕНО"); return }
+            array[index][keyPath: keyPath] = true
+            saveForAsyncMethods()
+            DispatchQueue.main.async { [weak self] in
+                self?.tableView.deleteRows(at: [IndexPath(row: index, section: section)], with: .fade)
+                self?.tableView.reloadData()
+            }
+    }
+
+    
+//    private func goBookToThird(by id: UUID) {
+//        guard let index = books.firstIndex(where: { $0.id == id }) else { print("ID для переноса книги не найден"); return }
+//        let bookGo = books[index]
+//        bookGo.read = true
+//        saveData()
+//        tableView.deleteRows(at: [IndexPath(row: index, section: 0)], with: .fade)
+//    }
+//    
+//    
+//    private func goMovieToThird(by id: UUID) {
+//        guard let index = movies.firstIndex(where: { $0.id == id }) else { print("ID для переноса фильма не найден"); return }
+//        let movieGo = movies[index]
+//        movieGo.watched = true
+//        saveData()
+//        tableView.deleteRows(at: [IndexPath(row: index, section: 1)], with: .fade)
+//    }
 }
