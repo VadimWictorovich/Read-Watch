@@ -11,7 +11,6 @@ import CoreData
 final class SecondVC: UIViewController, UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate {
     
     // MARK: - Properties
-    
     private let sections = BooksAndMovies.allCases
     private let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     private let addButton: UIBarButtonItem = {
@@ -19,8 +18,8 @@ final class SecondVC: UIViewController, UITableViewDataSource, UITableViewDelega
         but.image = UIImage(systemName: "plus")
         return but
     }()
-    private var books: [Book] = []
-    private var movies: [Movie] = []
+    var books: [Book] = []
+    var movies: [Movie] = []
     private var incompleteBooks: [Book] {
         return books.filter { !$0.read }
     }
@@ -114,25 +113,36 @@ final class SecondVC: UIViewController, UITableViewDataSource, UITableViewDelega
             switch sections[indexPath.section] {
             case .books:
                 let bookToDelete = incompleteBooks[indexPath.row]
-                deleteBook(by: bookToDelete.id!)
+                deleteItem1(bookToDelete, from: &books, in: 0)
+                //deleteItem(bookToDelete)
             case .movies:
                 let movieToDelete = incompleteMovies[indexPath.row]
-                deleteMovie(by: movieToDelete.id!)
+                //deleteItem(movieToDelete)
+                deleteItem1(movieToDelete, from: &movies, in: 1)
             }
+            tableView.reloadData()
         }
     }
     
-    //здесь нужно забросить на 3ий экран
+    
     func tableView(_ tableView: UITableView, leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         let indSect = indexPath.section
-        guard let vc = tabBarController?.viewControllers?[2] as? ThirdTVC else { return nil }
         let completeAction = UIContextualAction(style: .normal, title: setTitleSwipeAction(indSect)) { [weak self] _, _, _ in
-            self?.switchToTab1(2, animationOptions: .transitionCrossDissolve)
+            guard let self else { return }
+            switch sections[indexPath.section] {
+            case .books:
+                let goBook = self.incompleteBooks[indexPath.row]
+                markCompleteItem(goBook, witchKey: \.read, in: &books, in: 0)
+            case .movies:
+                let goMovie = self.incompleteMovies[indexPath.row]
+                markCompleteItem(goMovie, witchKey: \.watched, in: &movies, in: 1)
+            }
         }
         completeAction.backgroundColor = #colorLiteral(red: 0, green: 0.5907812036, blue: 0.5686688286, alpha: 1)
         let configuration = UISwipeActionsConfiguration(actions: [completeAction])
         return configuration
     }
+    
     
     private func setTitleSwipeAction (_ section: Int) -> String {
             switch section {
@@ -140,7 +150,6 @@ final class SecondVC: UIViewController, UITableViewDataSource, UITableViewDelega
             case 1: return "Посмотрел"
             default: return "Ошибка" }
     }
-    
     
     
     //MARK: - CoreData
@@ -167,9 +176,19 @@ final class SecondVC: UIViewController, UITableViewDataSource, UITableViewDelega
     private func saveData() {
         do {
             try context.save()
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                self.tableView.reloadData()
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [weak self] in
+                self?.tableView.reloadData()
             }
+        } catch {
+            let error = error as NSError
+            fatalError("-- ошибка метода \(#function) класса SecondVC: \(error)")
+        }
+    }
+    
+    // удалить
+    private func saveData1() {
+        do {
+            try context.save()
         } catch {
             let error = error as NSError
             fatalError("-- ошибка метода \(#function) класса SecondVC: \(error)")
@@ -298,41 +317,91 @@ final class SecondVC: UIViewController, UITableViewDataSource, UITableViewDelega
     
     
     //MARK: - Методы по удалению экземпляров книг и фильмов
-    private func deleteBook(by id: UUID) {
-        guard let index = books.firstIndex(where: { $0.id == id }) else { print("ID для удаления книги не найден"); return }
-        let bookDelete = books[index]
-        context.delete(bookDelete)
-        saveData()
-        books.remove(at: index)
-        tableView.deleteRows(at: [IndexPath(row: index, section: 0)], with: .fade)
+//    private func deleteBook(by id: UUID) {
+//        guard let index = books.firstIndex(where: { $0.id == id }) else { print("ID для удаления книги не найден"); return }
+//        let bookDelete = books[index]
+//        context.delete(bookDelete)
+//        saveData()
+//        books.remove(at: index)
+//        tableView.deleteRows(at: [IndexPath(row: index, section: 0)], with: .fade)
+//    }
+//    
+//    private func deleteMovie(by id: UUID) {
+//        guard let index = movies.firstIndex(where: { $0.id == id }) else { print("ID для удаления фильма не найден"); return }
+//        let movieDelete = movies[index]
+//        context.delete(movieDelete)
+//        saveData()
+//        movies.remove(at: index)
+//        tableView.deleteRows(at: [IndexPath(row: index, section: 1)], with: .fade)
+//    }
+    
+    /*
+     Параметры:
+     1._ item: T:
+        - Это объект, который вы хотите удалить (например, книга или фильм).
+     2. from array: inout [T]:
+        - array — массив, из которого удаляется объект.
+        - inout говорит о том, что массив передается по ссылке и может быть изменен.
+     3. in section: Int:
+        - Номер секции таблицы, чтобы знать, какую строку удалить из tableView.
+     */
+    
+    
+    private func deleteItem<T: NSManagedObject>(_ item: T) {
+        if let index = books.firstIndex(where: { $0 == item } ) {
+            let bookDelete = books[index]
+            context.delete(bookDelete)
+            saveData()
+            books.remove(at: index)
+            tableView.deleteRows(at: [IndexPath(row: index, section: 0)], with: .fade)
+        } else if let index = movies.firstIndex(where: { $0 == item } ) {
+            let movieDelete = movies[index]
+            context.delete(movieDelete)
+            saveData()
+            movies.remove(at: index)
+            tableView.deleteRows(at: [IndexPath(row: index, section: 1)], with: .fade)
+        }
     }
     
-    private func deleteMovie(by id: UUID) {
-        guard let index = movies.firstIndex(where: { $0.id == id }) else { print("ID для удаления фильма не найден"); return }
-        let movieDelete = movies[index]
-        context.delete(movieDelete)
-        saveData()
-        movies.remove(at: index)
-        tableView.deleteRows(at: [IndexPath(row: index, section: 1)], with: .fade)
-    }
     
+    private func deleteItem1<T: NSManagedObject>(_ item: T, from array: inout [T], in section: Int) {
+        //guard let index = array.firstIndex(of: item) else { print ("Нет объекта для удаления"); return }
+        guard let index = array.firstIndex(where: { $0 == item} ) else { print ("Нет объекта для удаления"); return }
+        let deleteItem = array[index]
+        context.delete(deleteItem)
+        saveData1()
+        array.remove(at: index)
+        DispatchQueue.main.async {
+            self.tableView.deleteRows(at: [IndexPath(row: index, section: section)], with: .fade)
+        }
+    }
+
     
     //MARK: - Методы по переносу экземпляров книг и фильмов на третий экран
-    
-    private func goBookToThird(by id: UUID) {
-        guard let index = books.firstIndex(where: { $0.id == id }) else { print("ID для удаления книги не найден"); return }
-        let bookGo = books[index]
-        bookGo.read = true
-        saveData()
-        tableView.deleteRows(at: [IndexPath(row: index, section: 0)], with: .fade)
+    private func markCompleteItem<T: NSManagedObject>(_ item: T, witchKey keyPath: ReferenceWritableKeyPath<T, Bool>,in array: inout [T], in section: Int) {
+        guard let index = array.firstIndex(of: item) else { print ("Нет объекта для переносаа в категорию ВЫПОЛНЕНО"); return }
+            array[index][keyPath: keyPath] = true
+            saveData()
+            DispatchQueue.main.async { [weak self] in
+                self?.tableView.deleteRows(at: [IndexPath(row: index, section: section)], with: .fade)
+            }
     }
+
     
-    
-    private func goMovieToThird(by id: UUID) {
-        guard let index = movies.firstIndex(where: { $0.id == id }) else { print("ID для удаления фильма не найден"); return }
-        let movieGo = movies[index]
-        movieGo.watched = true
-        saveData()
-        tableView.deleteRows(at: [IndexPath(row: index, section: 1)], with: .fade)
-    }
+//    private func goBookToThird(by id: UUID) {
+//        guard let index = books.firstIndex(where: { $0.id == id }) else { print("ID для переноса книги не найден"); return }
+//        let bookGo = books[index]
+//        bookGo.read = true
+//        saveData()
+//        tableView.deleteRows(at: [IndexPath(row: index, section: 0)], with: .fade)
+//    }
+//    
+//    
+//    private func goMovieToThird(by id: UUID) {
+//        guard let index = movies.firstIndex(where: { $0.id == id }) else { print("ID для переноса фильма не найден"); return }
+//        let movieGo = movies[index]
+//        movieGo.watched = true
+//        saveData()
+//        tableView.deleteRows(at: [IndexPath(row: index, section: 1)], with: .fade)
+//    }
 }
