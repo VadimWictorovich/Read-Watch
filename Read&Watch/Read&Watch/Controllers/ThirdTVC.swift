@@ -43,7 +43,7 @@ final class ThirdTVC: UITableViewController {
     override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat { 80 }
 
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return allCompleteContent.isEmpty ? "Нет данных" : "Прочитано: \(booksComplete.count) книг \nи Просмотрено: \(movieComplete.count) фильмов"
+        return allCompleteContent.isEmpty ? "Нет данных" : "Прочитано: \(booksComplete.count) книг \nПросмотрено: \(movieComplete.count) фильмов"
     }
     
 

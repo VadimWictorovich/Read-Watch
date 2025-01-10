@@ -113,14 +113,11 @@ final class SecondVC: UIViewController, UITableViewDataSource, UITableViewDelega
             switch sections[indexPath.section] {
             case .books:
                 let bookToDelete = incompleteBooks[indexPath.row]
-                deleteItem1(bookToDelete, from: &books, in: 0)
-                //deleteItem(bookToDelete)
+                deleteItem(bookToDelete, from: &books, in: 0)
             case .movies:
                 let movieToDelete = incompleteMovies[indexPath.row]
-                //deleteItem(movieToDelete)
-                deleteItem1(movieToDelete, from: &movies, in: 1)
+                deleteItem(movieToDelete, from: &movies, in: 1)
             }
-            tableView.reloadData()
         }
     }
     
@@ -132,10 +129,10 @@ final class SecondVC: UIViewController, UITableViewDataSource, UITableViewDelega
             switch sections[indexPath.section] {
             case .books:
                 let goBook = self.incompleteBooks[indexPath.row]
-                markCompleteItem(goBook, witchKey: \.read, in: &books, in: 0)
+                markCompleteItem(goBook, witchKey: \.read, from: &books, in: 0)
             case .movies:
                 let goMovie = self.incompleteMovies[indexPath.row]
-                markCompleteItem(goMovie, witchKey: \.watched, in: &movies, in: 1)
+                markCompleteItem(goMovie, witchKey: \.watched, from: &movies, in: 1)
             }
         }
         completeAction.backgroundColor = #colorLiteral(red: 0, green: 0.5907812036, blue: 0.5686688286, alpha: 1)
@@ -335,6 +332,26 @@ final class SecondVC: UIViewController, UITableViewDataSource, UITableViewDelega
 //        tableView.deleteRows(at: [IndexPath(row: index, section: 1)], with: .fade)
 //    }
     
+    
+    // нужно оставить так как это точно рабочий метод
+    /*
+     private func deleteItem<T: NSManagedObject>(_ item: T) {
+         if let index = books.firstIndex(where: { $0 == item } ) {
+             let bookDelete = books[index]
+             context.delete(bookDelete)
+             saveData()
+             books.remove(at: index)
+             tableView.deleteRows(at: [IndexPath(row: index, section: 0)], with: .fade)
+         } else if let index = movies.firstIndex(where: { $0 == item } ) {
+             let movieDelete = movies[index]
+             context.delete(movieDelete)
+             saveData()
+             movies.remove(at: index)
+             tableView.deleteRows(at: [IndexPath(row: index, section: 1)], with: .fade)
+         }
+     }
+     */
+    
     /*
      Параметры:
      1._ item: T:
@@ -346,44 +363,28 @@ final class SecondVC: UIViewController, UITableViewDataSource, UITableViewDelega
         - Номер секции таблицы, чтобы знать, какую строку удалить из tableView.
      */
     
-    
-    private func deleteItem<T: NSManagedObject>(_ item: T) {
-        if let index = books.firstIndex(where: { $0 == item } ) {
-            let bookDelete = books[index]
-            context.delete(bookDelete)
-            saveData()
-            books.remove(at: index)
-            tableView.deleteRows(at: [IndexPath(row: index, section: 0)], with: .fade)
-        } else if let index = movies.firstIndex(where: { $0 == item } ) {
-            let movieDelete = movies[index]
-            context.delete(movieDelete)
-            saveData()
-            movies.remove(at: index)
-            tableView.deleteRows(at: [IndexPath(row: index, section: 1)], with: .fade)
-        }
-    }
-    
-    
-    private func deleteItem1<T: NSManagedObject>(_ item: T, from array: inout [T], in section: Int) {
-        //guard let index = array.firstIndex(of: item) else { print ("Нет объекта для удаления"); return }
+    private func deleteItem<T: NSManagedObject>(_ item: T, from array: inout [T], in section: Int) {
         guard let index = array.firstIndex(where: { $0 == item} ) else { print ("Нет объекта для удаления"); return }
+        //let sArr = array
         let deleteItem = array[index]
         context.delete(deleteItem)
         saveData1()
         array.remove(at: index)
-        DispatchQueue.main.async {
-            self.tableView.deleteRows(at: [IndexPath(row: index, section: section)], with: .fade)
+        DispatchQueue.main.async { [weak self] in
+            self?.tableView.deleteRows(at: [IndexPath(row: index, section: section)], with: .fade)
+            self?.tableView.reloadData()
         }
     }
 
     
     //MARK: - Методы по переносу экземпляров книг и фильмов на третий экран
-    private func markCompleteItem<T: NSManagedObject>(_ item: T, witchKey keyPath: ReferenceWritableKeyPath<T, Bool>,in array: inout [T], in section: Int) {
-        guard let index = array.firstIndex(of: item) else { print ("Нет объекта для переносаа в категорию ВЫПОЛНЕНО"); return }
+    private func markCompleteItem<T: NSManagedObject>(_ item: T, witchKey keyPath: ReferenceWritableKeyPath<T, Bool>,from array: inout [T], in section: Int) {
+        guard let index = array.firstIndex(where: { $0 == item} ) else { print ("Нет объекта для переносаа в категорию ВЫПОЛНЕНО"); return }
             array[index][keyPath: keyPath] = true
-            saveData()
+            saveData1()
             DispatchQueue.main.async { [weak self] in
                 self?.tableView.deleteRows(at: [IndexPath(row: index, section: section)], with: .fade)
+                self?.tableView.reloadData()
             }
     }
 
