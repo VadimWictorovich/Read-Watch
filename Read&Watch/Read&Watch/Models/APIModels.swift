@@ -120,7 +120,7 @@ struct ReleaseYear: Codable {
 
 // MARK: - Votes
 struct Votes: Codable {
-    let kp: String?
+    let kp: Int?
     let imdb: Int?
     let tmdb: Int?
     let filmCritics: Int?

@@ -107,7 +107,6 @@ final class FirstTVC: UITableViewController {
                 vc1.addItem()
             }
         case .whatToDo:
-            //presentAlert("Данная функция пока не доступна!)")
             presentAlert("Данная функция пока не доступна!)", false)
         }
     }
