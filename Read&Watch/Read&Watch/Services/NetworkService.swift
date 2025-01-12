@@ -31,7 +31,7 @@ class NetworkService {
     }
     
     static func searchMoviesByName(movieName: String, callback: @escaping (_ result: DocsResponse?, _ error: Error?) -> ()) {
-        let url = "https://api.kinopoisk.dev/v1.4/movie/search?page=1&limit=100&query=\(movieName)"
+        let url = "https://api.kinopoisk.dev/v1.4/movie/search?page=1&limit=30&query=\(movieName)"
         let header: HTTPHeaders = ["X-API-KEY": NetworkProperties.apiKey]
         getRequest(url: url, header: header, callback: callback)
     }

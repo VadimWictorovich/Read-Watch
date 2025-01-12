@@ -107,12 +107,12 @@ final class SecondVC: UIViewController, UITableViewDataSource, UITableViewDelega
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let sb = UIStoryboard(name: "Main", bundle: nil)
         guard let vc = sb.instantiateViewController(withIdentifier: "FindListTVC") as? FindListTVC else { return }
-        let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
         switch sections[indexPath.section] {
         case .books:
             break
         case .movies:
-            NetworkService.searchMoviesByName(movieName: "Человек паук") { result, error in
+            guard let movieName = incompleteMovies[indexPath.row].name else { return }
+            NetworkService.searchMoviesByName(movieName: movieName) { result, error in
 //                guard error != nil else { print (" ***** \(#function) error: \(String(describing: error))"); return}
                 guard let result else { print (" ***** \(#function) нет объекта"); return }
                 let arr =  result.docs
