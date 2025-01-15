@@ -112,13 +112,18 @@ final class SecondVC: UIViewController, UITableViewDataSource, UITableViewDelega
             break
         case .movies:
             guard let movieName = incompleteMovies[indexPath.row].name else { return }
-            NetworkService.searchMoviesByName(movieName: movieName) { result, error in
+            NetworkService.searchMoviesByName(movieName: movieName) { [weak self] result, error in
 //                guard error != nil else { print (" ***** \(#function) error: \(String(describing: error))"); return}
                 guard let result else { print (" ***** \(#function) нет объекта"); return }
                 let arr =  result.docs
-                vc.showMoviesList = arr
-                DispatchQueue.main.asyncAfter(deadline: .now() + 3) { [weak self] in
-                    self?.navigationController?.pushViewController(vc, animated: true)
+                if arr.isEmpty {
+                    self?.presentAlert("Контент не найден", false)
+                } else {
+                    vc.showMoviesList = arr
+                    DispatchQueue.main.async {
+                        self?.startActivityAnimation()
+                        self?.navigationController?.pushViewController(vc, animated: true)
+                    }
                 }
             }
         }
@@ -163,8 +168,8 @@ final class SecondVC: UIViewController, UITableViewDataSource, UITableViewDelega
     
     private func setTitleSwipeAction (_ section: Int) -> String {
             switch section {
-            case 0: return "Прочитал"
-            case 1: return "Посмотрел"
+            case 0: return "Прочитано"
+            case 1: return "Просмотрено"
             default: return "Ошибка" }
     }
     
@@ -226,6 +231,7 @@ final class SecondVC: UIViewController, UITableViewDataSource, UITableViewDelega
         searchBar.placeholder = "Поиск..."
         tableView.dataSource = self
         tableView.delegate = self
+        tableView.separatorStyle = .none
         searchBar.delegate = self
     }
     

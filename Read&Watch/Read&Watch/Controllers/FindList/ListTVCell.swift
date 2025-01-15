@@ -25,6 +25,7 @@ final class ListTVCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         setupUI()
+
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {
@@ -35,6 +36,7 @@ final class ListTVCell: UITableViewCell {
     
     private func setupUI() {
         imageLbl.layer.cornerRadius = 10
+        selectionStyle = .none
     }
 
 }

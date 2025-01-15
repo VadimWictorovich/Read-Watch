@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		6C62B4262D37B8B50059E5FA /* NVActivityIndicatorView in Frameworks */ = {isa = PBXBuildFile; productRef = 6C62B4252D37B8B50059E5FA /* NVActivityIndicatorView */; };
+		6C62B4282D37B8B50059E5FA /* NVActivityIndicatorViewExtended in Frameworks */ = {isa = PBXBuildFile; productRef = 6C62B4272D37B8B50059E5FA /* NVActivityIndicatorViewExtended */; };
 		6CB06A3C2D32A4420033C973 /* AlamofireImage in Frameworks */ = {isa = PBXBuildFile; productRef = 6CB06A3B2D32A4420033C973 /* AlamofireImage */; };
 		6CB06A3F2D32A44E0033C973 /* SwiftyJSON in Frameworks */ = {isa = PBXBuildFile; productRef = 6CB06A3E2D32A44E0033C973 /* SwiftyJSON */; };
 /* End PBXBuildFile section */
@@ -42,7 +44,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				6CB06A3F2D32A44E0033C973 /* SwiftyJSON in Frameworks */,
+				6C62B4282D37B8B50059E5FA /* NVActivityIndicatorViewExtended in Frameworks */,
 				6CB06A3C2D32A4420033C973 /* AlamofireImage in Frameworks */,
+				6C62B4262D37B8B50059E5FA /* NVActivityIndicatorView in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -87,6 +91,8 @@
 			packageProductDependencies = (
 				6CB06A3B2D32A4420033C973 /* AlamofireImage */,
 				6CB06A3E2D32A44E0033C973 /* SwiftyJSON */,
+				6C62B4252D37B8B50059E5FA /* NVActivityIndicatorView */,
+				6C62B4272D37B8B50059E5FA /* NVActivityIndicatorViewExtended */,
 			);
 			productName = "Read&Watch";
 			productReference = 6CBA8E8F2D23B5D5004C5FC4 /* Read&Watch.app */;
@@ -119,6 +125,7 @@
 			packageReferences = (
 				6CB06A3A2D32A4420033C973 /* XCRemoteSwiftPackageReference "AlamofireImage" */,
 				6CB06A3D2D32A44E0033C973 /* XCRemoteSwiftPackageReference "SwiftyJSON" */,
+				6C62B4242D37B8B40059E5FA /* XCRemoteSwiftPackageReference "NVActivityIndicatorView" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 6CBA8E902D23B5D5004C5FC4 /* Products */;
@@ -358,6 +365,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		6C62B4242D37B8B40059E5FA /* XCRemoteSwiftPackageReference "NVActivityIndicatorView" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/ninjaprox/NVActivityIndicatorView.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.2.0;
+			};
+		};
 		6CB06A3A2D32A4420033C973 /* XCRemoteSwiftPackageReference "AlamofireImage" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/Alamofire/AlamofireImage.git";
@@ -377,6 +392,16 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		6C62B4252D37B8B50059E5FA /* NVActivityIndicatorView */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6C62B4242D37B8B40059E5FA /* XCRemoteSwiftPackageReference "NVActivityIndicatorView" */;
+			productName = NVActivityIndicatorView;
+		};
+		6C62B4272D37B8B50059E5FA /* NVActivityIndicatorViewExtended */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6C62B4242D37B8B40059E5FA /* XCRemoteSwiftPackageReference "NVActivityIndicatorView" */;
+			productName = NVActivityIndicatorViewExtended;
+		};
 		6CB06A3B2D32A4420033C973 /* AlamofireImage */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 6CB06A3A2D32A4420033C973 /* XCRemoteSwiftPackageReference "AlamofireImage" */;

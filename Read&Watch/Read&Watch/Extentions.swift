@@ -6,8 +6,10 @@
 //
 
 import UIKit
+import NVActivityIndicatorView
+import NVActivityIndicatorViewExtended
 
-extension UIViewController {
+extension UIViewController: NVActivityIndicatorViewable {
     
     func presentAlert(_ title: String,_ go: Bool) {
         let alert = UIAlertController(title: "Внимание",
@@ -45,4 +47,12 @@ extension UIViewController {
                 completion: nil
             )
         }
+    
+    func startActivityAnimation() {
+        startAnimating(message: "Загрузка...", type: .ballClipRotate, color: .white, textColor: .white)
+    }
+    
+    func stopActivityAnimation() {
+        stopAnimating()
+    }
 }

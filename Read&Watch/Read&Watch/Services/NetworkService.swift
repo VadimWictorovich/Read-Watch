@@ -5,9 +5,10 @@
 //  Created by Вадим Игнатенко on 11.01.25.
 //
 
-import Foundation
+import UIKit
 import Alamofire
 import SwiftyJSON
+import AlamofireImage
 
 
 class NetworkService {
@@ -35,5 +36,17 @@ class NetworkService {
         let header: HTTPHeaders = ["X-API-KEY": NetworkProperties.apiKey]
         getRequest(url: url, header: header, callback: callback)
     }
+    
+    
+     static func getMovieImage (imageURL: URL, callback: @escaping (_ result: UIImage?, _ error: Error?) -> ()) {
+         AF.request(imageURL).responseImage { response in
+             switch response.result {
+             case .success(let image):
+                 callback(image, nil)
+             case .failure(let error):
+                 callback(nil, error)
+             }
+         }
+     }
     
 }
