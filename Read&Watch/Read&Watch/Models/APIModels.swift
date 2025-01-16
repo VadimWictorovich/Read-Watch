@@ -7,8 +7,8 @@
 
 import Foundation
 
-
-// MARK: - Main Response
+// MARK: - MOVIES
+// Main Response
 struct DocsResponse: Codable {
     let docs: [Doc]
     let total: Int?
@@ -18,7 +18,7 @@ struct DocsResponse: Codable {
 }
 
 
-// MARK: - Doc
+// Doc
 struct Doc: Codable {
     let id: Int
     let name: String?
@@ -52,20 +52,20 @@ struct Doc: Codable {
 }
 
 
-// MARK: - Backdrop
+// Backdrop
 struct Backdrop: Codable {
     let url: String?
     let previewUrl: String?
 }
 
 
-// MARK: - Country
+// Country
 struct Country: Codable {
     let name: String?
 }
 
 
-// MARK: - ExternalID
+// ExternalID
 struct ExternalID: Codable {
     let kpHD: String?
     let imdb: String?
@@ -73,19 +73,19 @@ struct ExternalID: Codable {
 }
 
 
-// MARK: - Genre
+// Genre
 struct Genre: Codable {
     let name: String?
 }
 
 
-// MARK: - ImageURL
+// ImageURL
 struct ImageURL: Codable {
     let url: String?
 }
 
 
-// MARK: - DocName
+// DocName
 struct DocName: Codable {
     let name: String?
     let language: String?
@@ -93,14 +93,14 @@ struct DocName: Codable {
 }
 
 
-// MARK: - Poster
+// Poster
 struct Poster: Codable {
     let url: String?
     let previewUrl: String?
 }
 
 
-// MARK: - Rating
+// Rating
 struct Rating: Codable {
     let kp: Double?
     let imdb: Double?
@@ -111,14 +111,14 @@ struct Rating: Codable {
 }
 
 
-// MARK: - ReleaseYear
+// ReleaseYear
 struct ReleaseYear: Codable {
     let start: Int?
     let end: Int?
 }
 
 
-// MARK: - Votes
+// Votes
 struct Votes: Codable {
     let kp: Int?
     let imdb: Int?
@@ -129,89 +129,32 @@ struct Votes: Codable {
 }
 
 
-/*
- 
- "docs": [
-   {
-     "id": 0,
-     "name": "string",
-     "alternativeName": "string",
-     "enName": "string",
-     "type": "string",
-     "year": 0,
-     "description": "string",
-     "shortDescription": "string",
-     "movieLength": 0,
-     "names": [
-       {
-         "name": "string",
-         "language": "string",
-         "type": "string"
-       }
-     ],
-     "externalId": {
-       "kpHD": "48e8d0acb0f62d8585101798eaeceec5",
-       "imdb": "tt0232500",
-       "tmdb": 9799
-     },
-     "logo": {
-       "url": "string"
-     },
-     "poster": {
-       "url": "string",
-       "previewUrl": "string"
-     },
-     "backdrop": {
-       "url": "string",
-       "previewUrl": "string"
-     },
-     "rating": {
-       "kp": 6.2,
-       "imdb": 8.4,
-       "tmdb": 3.2,
-       "filmCritics": 10,
-       "russianFilmCritics": 5.1,
-       "await": 6.1
-     },
-     "votes": {
-       "kp": "60000",
-       "imdb": 50000,
-       "tmdb": 10000,
-       "filmCritics": 10000,
-       "russianFilmCritics": 4000,
-       "await": 34000
-     },
-     "genres": [
-       {
-         "name": "string"
-       }
-     ],
-     "countries": [
-       {
-         "name": "string"
-       }
-     ],
-     "releaseYears": [
-       {
-         "start": 2022,
-         "end": 2023
-       }
-     ],
-     "isSeries": true,
-     "ticketsOnSale": true,
-     "totalSeriesLength": 0,
-     "seriesLength": 0,
-     "ratingMpaa": "string",
-     "ageRating": 0,
-     "top10": 0,
-     "top250": 0,
-     "typeNumber": 0,
-     "status": "string"
-   }
- ],
- "total": 0,
- "limit": 0,
- "page": 0,
- "pages": 0
+// MARK: - BOOK
+// Главный ответ от Google Books API
+struct GoogleBooksResponse: Codable {
+    let totalItems: Int
+    let items: [Item]?
 }
- */
+
+// Отдельная структура для элемента книги
+struct Item: Codable {
+    let id: String
+    let volumeInfo: VolumeInfo
+}
+
+// Информация о книге
+struct VolumeInfo: Codable {
+    let title: String
+    let authors: [String]?
+    let publisher: String?
+    let publishedDate: String?
+    let description: String?
+    let imageLinks: ImageLinks?
+    let previewLink: String?
+}
+
+// Информация о ссылках на изображения книги
+struct ImageLinks: Codable {
+    let thumbnail: String?
+}
+

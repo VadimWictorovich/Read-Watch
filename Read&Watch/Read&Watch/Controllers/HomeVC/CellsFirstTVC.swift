@@ -7,7 +7,7 @@
 
 import UIKit
 
-class CellsFirstTVC: UITableViewCell {
+final class CellsFirstTVC: UITableViewCell {
     
     
     @IBOutlet weak var lbl: UILabel!

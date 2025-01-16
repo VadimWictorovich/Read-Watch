@@ -109,15 +109,14 @@ final class SecondVC: UIViewController, UITableViewDataSource, UITableViewDelega
         guard let vc = sb.instantiateViewController(withIdentifier: "FindListTVC") as? FindListTVC else { return }
         switch sections[indexPath.section] {
         case .books:
-            break
+            presentAlert("Контент не найден", false)
         case .movies:
             guard let movieName = incompleteMovies[indexPath.row].name else { return }
             NetworkService.searchMoviesByName(movieName: movieName) { [weak self] result, error in
 //                guard error != nil else { print (" ***** \(#function) error: \(String(describing: error))"); return}
                 guard let result else { print (" ***** \(#function) нет объекта"); return }
                 let arr =  result.docs
-                if arr.isEmpty {
-                    self?.presentAlert("Контент не найден", false)
+                if arr.isEmpty { self?.presentAlert("Контент не найден", false)
                 } else {
                     vc.showMoviesList = arr
                     DispatchQueue.main.async {
