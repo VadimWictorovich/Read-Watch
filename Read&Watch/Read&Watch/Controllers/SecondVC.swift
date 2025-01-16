@@ -119,8 +119,8 @@ final class SecondVC: UIViewController, UITableViewDataSource, UITableViewDelega
                 if arr.isEmpty { self?.presentAlert("Контент не найден", false)
                 } else {
                     vc.showMoviesList = arr
+                    self?.startActivityAnimation()
                     DispatchQueue.main.async {
-                        self?.startActivityAnimation()
                         self?.navigationController?.pushViewController(vc, animated: true)
                     }
                 }
@@ -153,10 +153,10 @@ final class SecondVC: UIViewController, UITableViewDataSource, UITableViewDelega
             switch sections[indexPath.section] {
             case .books:
                 let goBook = self.incompleteBooks[indexPath.row]
-                markCompleteItem(goBook, witchKey: \.read, from: &books, row: indexPath.row, in: 0)
+                markCompleteItem(goBook, witchKey: \.read, get: \.completeDate, from: &books, row: indexPath.row, in: 0)
             case .movies:
                 let goMovie = self.incompleteMovies[indexPath.row]
-                markCompleteItem(goMovie, witchKey: \.watched, from: &movies, row: indexPath.row, in: 1)
+                markCompleteItem(goMovie, witchKey: \.watched, get: \.completeDate, from: &movies, row: indexPath.row, in: 1)
             }
         }
         completeAction.backgroundColor = #colorLiteral(red: 0, green: 0.5907812036, blue: 0.5686688286, alpha: 1)
@@ -402,9 +402,25 @@ final class SecondVC: UIViewController, UITableViewDataSource, UITableViewDelega
 
     
     //MARK: - Методы по переносу экземпляров книг и фильмов на третий экран
-    private func markCompleteItem<T: NSManagedObject>(_ item: T, witchKey keyPath: ReferenceWritableKeyPath<T, Bool>,from array: inout [T], row indexPath: Int, in section: Int) {
+    /*
+     РАБОЧИЙ
+     private func markCompleteItem<T: NSManagedObject>(_ item: T, witchKey keyPath: ReferenceWritableKeyPath<T, Bool>,from array: inout [T], row indexPath: Int, in section: Int) {
+         guard let index = array.firstIndex(where: { $0 == item} ) else { print ("Нет объекта для переносаа в категорию ВЫПОЛНЕНО"); return }
+             let strDate = setupActualDate()
+             array[index][keyPath: keyPath] = true
+             saveForAsyncMethods()
+             DispatchQueue.main.async { [weak self] in
+                 self?.tableView.deleteRows(at: [IndexPath(row: indexPath, section: section)], with: .fade)
+                 self?.tableView.reloadData()
+             }
+     }
+     */
+    
+    private func markCompleteItem<T: NSManagedObject>(_ item: T, witchKey keyPath: ReferenceWritableKeyPath<T, Bool>,get dateStr: ReferenceWritableKeyPath<T, String?>, from array: inout [T], row indexPath: Int, in section: Int) {
         guard let index = array.firstIndex(where: { $0 == item} ) else { print ("Нет объекта для переносаа в категорию ВЫПОЛНЕНО"); return }
+            let strDate = setupActualDate()
             array[index][keyPath: keyPath] = true
+            array[index][keyPath: dateStr] = strDate
             saveForAsyncMethods()
             DispatchQueue.main.async { [weak self] in
                 self?.tableView.deleteRows(at: [IndexPath(row: indexPath, section: section)], with: .fade)
@@ -429,4 +445,13 @@ final class SecondVC: UIViewController, UITableViewDataSource, UITableViewDelega
 //        saveData()
 //        tableView.deleteRows(at: [IndexPath(row: index, section: 1)], with: .fade)
 //    }
+    
+    
+    private func setupActualDate() -> String {
+        let currentDate = Date()
+        let formatter = DateFormatter()
+        formatter.dateFormat = "dd/MM/yyyy"
+        let dateString = formatter.string(from: currentDate)
+        return dateString
+    }
 }

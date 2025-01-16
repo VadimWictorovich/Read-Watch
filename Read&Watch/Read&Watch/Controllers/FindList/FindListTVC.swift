@@ -9,6 +9,7 @@ import UIKit
 
 final class FindListTVC: UITableViewController {
     
+    
     var showMoviesList: [Doc] = []
     var showBooksList: [Item] = []
 
