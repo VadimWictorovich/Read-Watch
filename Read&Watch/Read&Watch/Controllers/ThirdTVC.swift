@@ -58,12 +58,13 @@ final class ThirdTVC: UITableViewController {
         if let val = item as? Book {
             cell.textLabel?.text = "\(val.name ?? "") \n\(val.author ?? "")"
             cell.imageView?.image = UIImage(systemName: "book")
+            cell.detailTextLabel?.text = val.completeDate ?? " "
         } else if let val = item as? Movie {
             cell.textLabel?.text = "\(val.name ?? "") \n\(val.genre ?? "")"
             cell.imageView?.image = UIImage(systemName: "movieclapper")
+            cell.detailTextLabel?.text = val.completeDate ?? " "
         }
         cell.imageView?.tintColor = #colorLiteral(red: 0, green: 0.5907812036, blue: 0.5686688286, alpha: 1)
-        cell.detailTextLabel?.text = setupDate()
         return cell
     }
     

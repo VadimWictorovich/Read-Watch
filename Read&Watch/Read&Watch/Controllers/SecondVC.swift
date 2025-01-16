@@ -104,6 +104,30 @@ final class SecondVC: UIViewController, UITableViewDataSource, UITableViewDelega
         return cell
     }
     
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let sb = UIStoryboard(name: "Main", bundle: nil)
+        guard let vc = sb.instantiateViewController(withIdentifier: "FindListTVC") as? FindListTVC else { return }
+        switch sections[indexPath.section] {
+        case .books:
+            presentAlert("Контент не найден", false)
+        case .movies:
+            guard let movieName = incompleteMovies[indexPath.row].name else { return }
+            NetworkService.searchMoviesByName(movieName: movieName) { [weak self] result, error in
+//                guard error != nil else { print (" ***** \(#function) error: \(String(describing: error))"); return}
+                guard let result else { print (" ***** \(#function) нет объекта"); return }
+                let arr =  result.docs
+                if arr.isEmpty { self?.presentAlert("Контент не найден", false)
+                } else {
+                    vc.showMoviesList = arr
+                    self?.startActivityAnimation()
+                    DispatchQueue.main.async {
+                        self?.navigationController?.pushViewController(vc, animated: true)
+                    }
+                }
+            }
+        }
+    }
+    
     
     func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool { true }
     
@@ -113,10 +137,10 @@ final class SecondVC: UIViewController, UITableViewDataSource, UITableViewDelega
             switch sections[indexPath.section] {
             case .books:
                 let bookToDelete = incompleteBooks[indexPath.row]
-                deleteItem(bookToDelete, from: &books, in: 0)
+                deleteItem(bookToDelete, from: &books, row: indexPath.row, in: 0)
             case .movies:
                 let movieToDelete = incompleteMovies[indexPath.row]
-                deleteItem(movieToDelete, from: &movies, in: 1)
+                deleteItem(movieToDelete, from: &movies, row: indexPath.row, in: 1)
             }
         }
     }
@@ -129,10 +153,10 @@ final class SecondVC: UIViewController, UITableViewDataSource, UITableViewDelega
             switch sections[indexPath.section] {
             case .books:
                 let goBook = self.incompleteBooks[indexPath.row]
-                markCompleteItem(goBook, witchKey: \.read, from: &books, in: 0)
+                markCompleteItem(goBook, witchKey: \.read, get: \.completeDate, from: &books, row: indexPath.row, in: 0)
             case .movies:
                 let goMovie = self.incompleteMovies[indexPath.row]
-                markCompleteItem(goMovie, witchKey: \.watched, from: &movies, in: 1)
+                markCompleteItem(goMovie, witchKey: \.watched, get: \.completeDate, from: &movies, row: indexPath.row, in: 1)
             }
         }
         completeAction.backgroundColor = #colorLiteral(red: 0, green: 0.5907812036, blue: 0.5686688286, alpha: 1)
@@ -143,8 +167,8 @@ final class SecondVC: UIViewController, UITableViewDataSource, UITableViewDelega
     
     private func setTitleSwipeAction (_ section: Int) -> String {
             switch section {
-            case 0: return "Прочитал"
-            case 1: return "Посмотрел"
+            case 0: return "Прочитано"
+            case 1: return "Просмотрено"
             default: return "Ошибка" }
     }
     
@@ -206,6 +230,7 @@ final class SecondVC: UIViewController, UITableViewDataSource, UITableViewDelega
         searchBar.placeholder = "Поиск..."
         tableView.dataSource = self
         tableView.delegate = self
+        tableView.separatorStyle = .none
         searchBar.delegate = self
     }
     
@@ -363,27 +388,42 @@ final class SecondVC: UIViewController, UITableViewDataSource, UITableViewDelega
         - Номер секции таблицы, чтобы знать, какую строку удалить из tableView.
      */
     
-    private func deleteItem<T: NSManagedObject>(_ item: T, from array: inout [T], in section: Int) {
+    private func deleteItem<T: NSManagedObject>(_ item: T, from array: inout [T],row indexPath: Int,  in section: Int) {
         guard let index = array.firstIndex(where: { $0 == item} ) else { print ("Нет объекта для удаления"); return }
-        //let sArr = array
         let deleteItem = array[index]
         context.delete(deleteItem)
         saveForAsyncMethods()
         array.remove(at: index)
         DispatchQueue.main.async { [weak self] in
-            self?.tableView.deleteRows(at: [IndexPath(row: index, section: section)], with: .fade)
+            self?.tableView.deleteRows(at: [IndexPath(row: indexPath, section: section)], with: .fade)
             self?.tableView.reloadData()
         }
     }
 
     
     //MARK: - Методы по переносу экземпляров книг и фильмов на третий экран
-    private func markCompleteItem<T: NSManagedObject>(_ item: T, witchKey keyPath: ReferenceWritableKeyPath<T, Bool>,from array: inout [T], in section: Int) {
+    /*
+     РАБОЧИЙ
+     private func markCompleteItem<T: NSManagedObject>(_ item: T, witchKey keyPath: ReferenceWritableKeyPath<T, Bool>,from array: inout [T], row indexPath: Int, in section: Int) {
+         guard let index = array.firstIndex(where: { $0 == item} ) else { print ("Нет объекта для переносаа в категорию ВЫПОЛНЕНО"); return }
+             let strDate = setupActualDate()
+             array[index][keyPath: keyPath] = true
+             saveForAsyncMethods()
+             DispatchQueue.main.async { [weak self] in
+                 self?.tableView.deleteRows(at: [IndexPath(row: indexPath, section: section)], with: .fade)
+                 self?.tableView.reloadData()
+             }
+     }
+     */
+    
+    private func markCompleteItem<T: NSManagedObject>(_ item: T, witchKey keyPath: ReferenceWritableKeyPath<T, Bool>,get dateStr: ReferenceWritableKeyPath<T, String?>, from array: inout [T], row indexPath: Int, in section: Int) {
         guard let index = array.firstIndex(where: { $0 == item} ) else { print ("Нет объекта для переносаа в категорию ВЫПОЛНЕНО"); return }
+            let strDate = setupActualDate()
             array[index][keyPath: keyPath] = true
+            array[index][keyPath: dateStr] = strDate
             saveForAsyncMethods()
             DispatchQueue.main.async { [weak self] in
-                self?.tableView.deleteRows(at: [IndexPath(row: index, section: section)], with: .fade)
+                self?.tableView.deleteRows(at: [IndexPath(row: indexPath, section: section)], with: .fade)
                 self?.tableView.reloadData()
             }
     }
@@ -405,4 +445,13 @@ final class SecondVC: UIViewController, UITableViewDataSource, UITableViewDelega
 //        saveData()
 //        tableView.deleteRows(at: [IndexPath(row: index, section: 1)], with: .fade)
 //    }
+    
+    
+    private func setupActualDate() -> String {
+        let currentDate = Date()
+        let formatter = DateFormatter()
+        formatter.dateFormat = "dd/MM/yyyy"
+        let dateString = formatter.string(from: currentDate)
+        return dateString
+    }
 }

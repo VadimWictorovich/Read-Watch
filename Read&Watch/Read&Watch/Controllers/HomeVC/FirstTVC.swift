@@ -107,7 +107,6 @@ final class FirstTVC: UITableViewController {
                 vc1.addItem()
             }
         case .whatToDo:
-            //presentAlert("Данная функция пока не доступна!)")
             presentAlert("Данная функция пока не доступна!)", false)
         }
     }
@@ -116,5 +115,6 @@ final class FirstTVC: UITableViewController {
     private func setupUI() {
         tabBarController?.tabBar.tintColor = #colorLiteral(red: 0.5808190107, green: 0.0884276256, blue: 0.3186392188, alpha: 1)
         tableView.isScrollEnabled = false
+        tableView.separatorStyle = .none
     }
 }
