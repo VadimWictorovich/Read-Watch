@@ -18,6 +18,7 @@ final class FirstTVC: UITableViewController {
     private let categories = BooksAndMovies.allCases
     private let sections = Sections.allCases
     private weak var tabBarCont: TabBarControoler?
+    private lazy var randomItemView = RandomItemView()
     
 
     //MARK: - Life circle TVC
@@ -107,7 +108,8 @@ final class FirstTVC: UITableViewController {
                 vc1.addItem()
             }
         case .whatToDo:
-            presentAlert("Данная функция пока не доступна!)", false)
+            showRandomItem()
+            //presentAlert("Данная функция пока не доступна!)", false)
         }
     }
     
@@ -117,4 +119,21 @@ final class FirstTVC: UITableViewController {
         tableView.isScrollEnabled = false
         tableView.separatorStyle = .none
     }
+    
+    
+     private func showRandomItem() {
+         //blurEffect()
+         randomItemView.frame.size = CGSize(width: 320, height: 200)
+         randomItemView.center.x = view.center.x
+         randomItemView.transform = CGAffineTransform(scaleX: 3.9, y: 0.2)
+         //randomItemView.delegate = self
+         //randomItemView.delegateClosed = self
+         view.addSubview(randomItemView)
+         UIView.animate(withDuration: 0.1, delay: 0, usingSpringWithDamping: 0.6, initialSpringVelocity: 0) { [weak self] in
+             self?.randomItemView.transform = .identity
+         }
+     }
+     
+    
+    
 }
