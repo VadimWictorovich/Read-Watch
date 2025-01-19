@@ -6,8 +6,10 @@
 //
 
 import UIKit
+import CoreData
 
-final class FirstTVC: UITableViewController {
+final class FirstTVC: UITableViewController, CloseViewDelegate {
+    
     enum Sections: String, CaseIterable {
         case categories = "Категории"
         case add = "Добавить"
@@ -15,10 +17,20 @@ final class FirstTVC: UITableViewController {
     }
     
     //MARK: - Properties
+    private let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     private let categories = BooksAndMovies.allCases
     private let sections = Sections.allCases
     private weak var tabBarCont: TabBarControoler?
     private lazy var randomItemView = RandomItemView()
+    private var books: [Book] = []
+    private var movies: [Movie] = []
+    private var incompleteBooks: [Book] {
+        return books.filter { !$0.read }
+    }
+    private var incompleteMovies: [Movie] {
+        return movies.filter { !$0.watched }
+    }
+    var blurEff = UIVisualEffectView(effect: UIBlurEffect(style: .regular))
     
 
     //MARK: - Life circle TVC
@@ -33,6 +45,12 @@ final class FirstTVC: UITableViewController {
         tabBarController?.navigationItem.rightBarButtonItem?.isHidden = true
         tabBarController?.navigationItem.title = "Книги и фильмы"
         tabBarController?.navigationController?.navigationBar.prefersLargeTitles = true
+    }
+    
+    
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        updateBckgroundColor()
     }
     
     
@@ -108,33 +126,68 @@ final class FirstTVC: UITableViewController {
                 vc1.addItem()
             }
         case .whatToDo:
-            showRandomItem()
-            //presentAlert("Данная функция пока не доступна!)", false)
+            incompleteBooks.isEmpty || incompleteMovies.isEmpty ? presentAlert("Данных нет, добавьте интересуемый контент!", false) : showRandomItem()
         }
     }
     
     // MARK: - Methods
     private func setupUI() {
+        updateBckgroundColor()
+        loadBooks()
+        loadMovies()
         tabBarController?.tabBar.tintColor = #colorLiteral(red: 0.5808190107, green: 0.0884276256, blue: 0.3186392188, alpha: 1)
         tableView.isScrollEnabled = false
         tableView.separatorStyle = .none
     }
     
     
-     private func showRandomItem() {
-         //blurEffect()
-         randomItemView.frame.size = CGSize(width: 320, height: 200)
+    private func showRandomItem() {
+         showBlEff()
+         randomItemView.frame.size = CGSize(width: 340, height: 230)
          randomItemView.center.x = view.center.x
-         randomItemView.transform = CGAffineTransform(scaleX: 3.9, y: 0.2)
-         //randomItemView.delegate = self
-         //randomItemView.delegateClosed = self
+         randomItemView.center.y = view.center.y - 200
+         randomItemView.transform = CGAffineTransform(scaleX: 0.8, y: 1.5)
+         randomItemView.delegateCloseView = self
          view.addSubview(randomItemView)
-         UIView.animate(withDuration: 0.1, delay: 0, usingSpringWithDamping: 0.6, initialSpringVelocity: 0) { [weak self] in
+        UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.5, initialSpringVelocity: 0) { [weak self] in
              self?.randomItemView.transform = .identity
          }
      }
-     
     
     
+    private func showBlEff() {
+        blurEff.frame = view.bounds
+        view.addSubview(blurEff)
+    }
     
+    
+    private func cancelBlurEffect() {
+        blurEff.removeFromSuperview()
+    }
+    
+    
+    private func loadBooks(with request: NSFetchRequest<Book> = Book.fetchRequest()) {
+        do {
+            books = try context.fetch(request)
+        } catch {
+            let error = error as NSError
+            fatalError("-- ошибка метода \(#function) класса SecondVC: \(error)")
+        }
+    }
+    
+    
+    private func loadMovies(with request: NSFetchRequest<Movie> = Movie.fetchRequest()) {
+        do {
+            movies = try context.fetch(request)
+        } catch {
+            let error = error as NSError
+            fatalError("-- ошибка метода \(#function) класса SecondVC: \(error)")
+        }
+    }
+    
+    // Protoloc relize
+    func closeView() {
+        randomItemView.removeFromSuperview()
+        cancelBlurEffect()
+    }
 }

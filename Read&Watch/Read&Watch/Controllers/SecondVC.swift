@@ -47,6 +47,7 @@ final class SecondVC: UIViewController, UITableViewDataSource, UITableViewDelega
         tabBarController?.navigationController?.navigationBar.prefersLargeTitles = false
         setupSegmentedControl()
     }
+  
     
     // MARK: - Table view data source and delegate
     func numberOfSections(in tableView: UITableView) -> Int { sections.count }
