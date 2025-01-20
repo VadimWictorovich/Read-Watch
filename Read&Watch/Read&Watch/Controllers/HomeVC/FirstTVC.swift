@@ -10,6 +10,7 @@ import CoreData
 
 final class FirstTVC: UITableViewController, CloseViewDelegate {
     
+    // MARK: - ENUMS
     enum Sections: String, CaseIterable {
         case categories = "Категории"
         case add = "Добавить"
@@ -22,14 +23,9 @@ final class FirstTVC: UITableViewController, CloseViewDelegate {
     private let sections = Sections.allCases
     private weak var tabBarCont: TabBarControoler?
     private lazy var randomItemView = RandomItemView()
-    private var books: [Book] = []
-    private var movies: [Movie] = []
-    private var incompleteBooks: [Book] {
-        return books.filter { !$0.read }
-    }
-    private var incompleteMovies: [Movie] {
-        return movies.filter { !$0.watched }
-    }
+    private var bookItems: [Book] = []
+    private var movieItems: [Movie] = []
+    private var items: [AnyObject] = []
     var blurEff = UIVisualEffectView(effect: UIBlurEffect(style: .regular))
     
 
@@ -42,6 +38,7 @@ final class FirstTVC: UITableViewController, CloseViewDelegate {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        updateBckgroundColor()
         tabBarController?.navigationItem.rightBarButtonItem?.isHidden = true
         tabBarController?.navigationItem.title = "Книги и фильмы"
         tabBarController?.navigationController?.navigationBar.prefersLargeTitles = true
@@ -57,9 +54,11 @@ final class FirstTVC: UITableViewController, CloseViewDelegate {
     // MARK: - Table view data source and delegate
     override func numberOfSections(in tableView: UITableView) -> Int { sections.count }
     
+    
     override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return section == 0 ? 80 : 20
     }
+    
     
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         switch sections[section] {
@@ -71,6 +70,7 @@ final class FirstTVC: UITableViewController, CloseViewDelegate {
             return nil
         }
     }
+    
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch sections[section] {
@@ -82,6 +82,7 @@ final class FirstTVC: UITableViewController, CloseViewDelegate {
             return 1
         }
     }
+    
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath) as? CellsFirstTVC
@@ -106,10 +107,11 @@ final class FirstTVC: UITableViewController, CloseViewDelegate {
             cell.img.tintColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
             cell.img?.backgroundColor = .systemGray
         }
+        cell.selectionStyle = .none
         return cell
     }
     
-    // TODO: доделать переходы
+    
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         guard let vc1 = tabBarController?.viewControllers?[1] as? SecondVC else { return }
         switch sections[indexPath.section] {
@@ -126,22 +128,28 @@ final class FirstTVC: UITableViewController, CloseViewDelegate {
                 vc1.addItem()
             }
         case .whatToDo:
-            incompleteBooks.isEmpty || incompleteMovies.isEmpty ? presentAlert("Данных нет, добавьте интересуемый контент!", false) : showRandomItem()
+            getData()
+            items.isEmpty ? presentAlert("Данных нет, добавьте интересуемый контент!", false) : setupRandomView()
         }
     }
     
     // MARK: - Methods
     private func setupUI() {
-        updateBckgroundColor()
-        loadBooks()
-        loadMovies()
         tabBarController?.tabBar.tintColor = #colorLiteral(red: 0.5808190107, green: 0.0884276256, blue: 0.3186392188, alpha: 1)
         tableView.isScrollEnabled = false
         tableView.separatorStyle = .none
     }
     
     
-    private func showRandomItem() {
+    private func showRandomView() {
+        guard !items.isEmpty else {print("** items is Empty"); return }
+        setupRandomView()
+        randomItemView.items = items
+        randomItemView.showTitleItem()
+    }
+    
+    
+    private func setupRandomView() {
          showBlEff()
          randomItemView.frame.size = CGSize(width: 340, height: 230)
          randomItemView.center.x = view.center.x
@@ -149,7 +157,7 @@ final class FirstTVC: UITableViewController, CloseViewDelegate {
          randomItemView.transform = CGAffineTransform(scaleX: 0.8, y: 1.5)
          randomItemView.delegateCloseView = self
          view.addSubview(randomItemView)
-        UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.5, initialSpringVelocity: 0) { [weak self] in
+         UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.5, initialSpringVelocity: 0) { [weak self] in
              self?.randomItemView.transform = .identity
          }
      }
@@ -166,9 +174,13 @@ final class FirstTVC: UITableViewController, CloseViewDelegate {
     }
     
     
+    // MARK: - CoreData methods
     private func loadBooks(with request: NSFetchRequest<Book> = Book.fetchRequest()) {
         do {
-            books = try context.fetch(request)
+            bookItems = try context.fetch(request)
+            bookItems.forEach { book in
+                if !book.read { items.append(book) }
+            }
         } catch {
             let error = error as NSError
             fatalError("-- ошибка метода \(#function) класса SecondVC: \(error)")
@@ -178,14 +190,24 @@ final class FirstTVC: UITableViewController, CloseViewDelegate {
     
     private func loadMovies(with request: NSFetchRequest<Movie> = Movie.fetchRequest()) {
         do {
-            movies = try context.fetch(request)
+            movieItems = try context.fetch(request)
+            movieItems.forEach { movie in
+                if !movie.watched { items.append(movie) }
+            }
         } catch {
             let error = error as NSError
             fatalError("-- ошибка метода \(#function) класса SecondVC: \(error)")
         }
     }
     
-    // Protoloc relize
+    
+    private func getData() {
+        loadBooks()
+        loadMovies()
+    }
+    
+    
+    // MARK: - Relize PROTOCOLS
     func closeView() {
         randomItemView.removeFromSuperview()
         cancelBlurEffect()

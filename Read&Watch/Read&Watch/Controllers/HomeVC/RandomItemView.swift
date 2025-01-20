@@ -6,13 +6,16 @@
 //
 
 import UIKit
+import CoreData
 
 class RandomItemView: UIView {
     
     
     // MARK: - PROPERTIES
+    private let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     var delegateCloseView: CloseViewDelegate?
-    var items: [AnyObject] = []
+    var items: [AnyObject]?
+    
     
     // UI properties
     private let label: UILabel = {
@@ -39,6 +42,7 @@ class RandomItemView: UIView {
         but.layer.cornerRadius = 10
         but.layer.borderWidth = 1
         but.translatesAutoresizingMaskIntoConstraints = false
+        but.addTarget(nil, action: #selector(repeatShowItem), for: .allTouchEvents)
         return but
     }()
 
@@ -65,7 +69,7 @@ class RandomItemView: UIView {
         layer.cornerRadius = 20
         layer.borderWidth = 2.0
         //label.text = showTitleItem()
-        label.text = "Советую Вам \nпрочитать Гордость и предубеждение \nавтора - Джейн Остин"
+        //label.text = "Советую Вам \nпрочитать Гордость и предубеждение \nавтора - Джейн Остин"
         addSubview(label)
         addSubview(closeButton)
         addSubview(reapitButton)
@@ -86,8 +90,8 @@ class RandomItemView: UIView {
             label.textColor = #colorLiteral(red: 0.370555222, green: 0.3705646992, blue: 0.3705595732, alpha: 1)
             closeButton.tintColor = #colorLiteral(red: 0.6000000238, green: 0.6000000238, blue: 0.6000000238, alpha: 1)
         case .dark:
-            backgroundColor = #colorLiteral(red: 0, green: 0.08763525635, blue: 0.1566192508, alpha: 1)
-            layer.borderColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
+            backgroundColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
+            layer.borderColor = #colorLiteral(red: 0.2605174184, green: 0.2605243921, blue: 0.260520637, alpha: 1)
             reapitButton.setTitleColor(.white, for: .normal)
             reapitButton.layer.borderColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
             label.textColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
@@ -97,6 +101,7 @@ class RandomItemView: UIView {
             layer.borderColor = #colorLiteral(red: 0.1215686277, green: 0.01176470611, blue: 0.4235294163, alpha: 1)
         }
     }
+    
     
     private func setupConstrains() {
         NSLayoutConstraint(item: closeButton, attribute: .top, relatedBy: .equal, toItem: self, attribute: .topMargin, multiplier: 1.0, constant: 5.0).isActive = true
@@ -110,13 +115,21 @@ class RandomItemView: UIView {
         NSLayoutConstraint(item: reapitButton, attribute: .bottom, relatedBy: .equal, toItem: self, attribute: .bottomMargin, multiplier: 1.0, constant: -20.0).isActive = true
     }
     
-    private func showTitleItem() -> String {
-        let item = items.randomElement()
-        if let it = item as? Book { return "Советую Вам прочитать \n\(it.name ?? "ПУСТО") \nавтора - \(it.author ?? "ПУСТО")" }
-        else if let it = item as? Movie { return "Советую Вам посмотреть \n\(it.name ?? "ПУСТО") \nжанр - \(it.genre ?? "ПУСТО")" } else {
-            return "ПУСТО"
-        }
+    
+    func showTitleItem() {
+        guard let items, !items.isEmpty else { print("*** items is empty"); return }
+        var item = items.randomElement()
+        if item is Book {
+            label.text = "Советую Вам прочитать \n'\(item?.name ?? "ПУСТО")' \nавтор: \(item?.author ?? "ПУСТО")"
+        } else if item is Movie {
+            label.text = "Советую Вам посмотреть \n'\(item?.name ?? "EMPTY")' \nжанр: \(item?.genre ?? "EMPTY")" }
     }
+    
+    
+    @objc private func repeatShowItem() {
+        showTitleItem()
+    }
+    
     
     @objc private func closeAction() {
         delegateCloseView?.closeView()
