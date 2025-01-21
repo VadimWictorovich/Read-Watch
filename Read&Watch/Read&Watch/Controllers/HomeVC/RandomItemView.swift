@@ -99,6 +99,7 @@ class RandomItemView: UIView {
             reapitButton.setTitleColor(col1, for: .normal)
             reapitButton.layer.borderColor = #colorLiteral(red: 0.721568644, green: 0.8862745166, blue: 0.5921568871, alpha: 1)
             labelMain.textColor = #colorLiteral(red: 0.370555222, green: 0.3705646992, blue: 0.3705595732, alpha: 1)
+            labelSecond.tintColor = #colorLiteral(red: 0.8374180198, green: 0.8374378085, blue: 0.8374271393, alpha: 1)
             closeButton.tintColor = #colorLiteral(red: 0.6000000238, green: 0.6000000238, blue: 0.6000000238, alpha: 1)
         case .dark:
             backgroundColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
@@ -106,6 +107,7 @@ class RandomItemView: UIView {
             reapitButton.setTitleColor(.white, for: .normal)
             reapitButton.layer.borderColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
             labelMain.textColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
+            labelSecond.tintColor = #colorLiteral(red: 0.8374180198, green: 0.8374378085, blue: 0.8374271393, alpha: 1)
             closeButton.tintColor = #colorLiteral(red: 0.6000000238, green: 0.6000000238, blue: 0.6000000238, alpha: 1)
         @unknown default:
             backgroundColor = #colorLiteral(red: 0, green: 0.08763525635, blue: 0.1566192508, alpha: 1)
@@ -122,7 +124,7 @@ class RandomItemView: UIView {
         NSLayoutConstraint(item: labelMain, attribute: .trailing, relatedBy: .equal, toItem: self, attribute: .trailingMargin, multiplier: 1.0, constant: -5.0).isActive = true
         NSLayoutConstraint(item: labelMain, attribute: .leading, relatedBy: .equal, toItem: self, attribute: .leadingMargin, multiplier: 1.0, constant: 5.0).isActive = true
         NSLayoutConstraint(item: labelMain, attribute: .centerY, relatedBy: .equal, toItem: self, attribute: .centerYWithinMargins, multiplier: 1.0, constant: -20.0).isActive = true
-        NSLayoutConstraint(item: labelSecond, attribute: .top, relatedBy: .equal, toItem: labelMain, attribute: .topMargin, multiplier: 1.0, constant: 35.0).isActive = true
+        NSLayoutConstraint(item: labelSecond, attribute: .top, relatedBy: .equal, toItem: labelMain, attribute: .topMargin, multiplier: 1.0, constant: 40.0).isActive = true
         NSLayoutConstraint(item: labelSecond, attribute: .trailing, relatedBy: .equal, toItem: self, attribute: .trailingMargin, multiplier: 1.0, constant: -5.0).isActive = true
         NSLayoutConstraint(item: labelSecond, attribute: .leading, relatedBy: .equal, toItem: self, attribute: .leadingMargin, multiplier: 1.0, constant: 5.0).isActive = true
         NSLayoutConstraint(item: reapitButton, attribute: .trailing, relatedBy: .equal, toItem: self, attribute: .trailingMargin, multiplier: 1.0, constant: -30.0).isActive = true
