@@ -55,9 +55,7 @@ final class FirstTVC: UITableViewController, CloseViewDelegate {
     override func numberOfSections(in tableView: UITableView) -> Int { sections.count }
     
     
-    override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return section == 0 ? 80 : 20
-    }
+    override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat { return section == 0 ? 80 : 20 }
     
     
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
@@ -129,7 +127,7 @@ final class FirstTVC: UITableViewController, CloseViewDelegate {
             }
         case .whatToDo:
             getData()
-            items.isEmpty ? presentAlert("Данных нет, добавьте интересуемый контент!", false) : setupRandomView()
+            items.isEmpty ? presentAlert("Данных нет, добавьте интересуемый контент!", false) : showRandomView()
         }
     }
     
@@ -138,6 +136,17 @@ final class FirstTVC: UITableViewController, CloseViewDelegate {
         tabBarController?.tabBar.tintColor = #colorLiteral(red: 0.5808190107, green: 0.0884276256, blue: 0.3186392188, alpha: 1)
         tableView.isScrollEnabled = false
         tableView.separatorStyle = .none
+    }
+    
+    
+    private func showBlEff() {
+        blurEff.frame = view.bounds
+        view.addSubview(blurEff)
+    }
+    
+    
+    private func cancelBlurEffect() {
+        blurEff.removeFromSuperview()
     }
     
     
@@ -161,17 +170,6 @@ final class FirstTVC: UITableViewController, CloseViewDelegate {
              self?.randomItemView.transform = .identity
          }
      }
-    
-    
-    private func showBlEff() {
-        blurEff.frame = view.bounds
-        view.addSubview(blurEff)
-    }
-    
-    
-    private func cancelBlurEffect() {
-        blurEff.removeFromSuperview()
-    }
     
     
     // MARK: - CoreData methods

@@ -8,8 +8,8 @@
 import UIKit
 import CoreData
 
+
 class RandomItemView: UIView {
-    
     
     // MARK: - PROPERTIES
     private let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
