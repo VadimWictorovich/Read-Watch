@@ -21,6 +21,10 @@ class TabBarControoler: UITabBarController, UITabBarControllerDelegate {
         super.viewWillAppear(animated)
     }
     
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+    }
+    
     
     // TabBarCont delegate
     func tabBarController(_ tabBarController: UITabBarController, shouldSelect viewController: UIViewController) -> Bool {

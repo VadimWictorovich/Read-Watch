@@ -16,16 +16,21 @@ final class FindListTVC: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        updateBckgroundColor()
         navigationItem.title = "Результаты поиска"
         navigationController?.navigationBar.tintColor = .gray
         tableView.separatorStyle = .none
 
     }
+    
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        updateBckgroundColor()
+    }
 
     // MARK: - Table view data source
 
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int { showMoviesList.count
-    }
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int { showMoviesList.count }
 
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {

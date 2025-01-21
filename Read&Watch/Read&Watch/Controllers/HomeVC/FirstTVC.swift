@@ -6,8 +6,11 @@
 //
 
 import UIKit
+import CoreData
 
-final class FirstTVC: UITableViewController {
+final class FirstTVC: UITableViewController, CloseViewDelegate {
+    
+    // MARK: - ENUMS
     enum Sections: String, CaseIterable {
         case categories = "Категории"
         case add = "Добавить"
@@ -15,9 +18,15 @@ final class FirstTVC: UITableViewController {
     }
     
     //MARK: - Properties
+    private let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     private let categories = BooksAndMovies.allCases
     private let sections = Sections.allCases
     private weak var tabBarCont: TabBarControoler?
+    private lazy var randomItemView = RandomItemView()
+    private var bookItems: [Book] = []
+    private var movieItems: [Movie] = []
+    private var items: [AnyObject] = []
+    var blurEff = UIVisualEffectView(effect: UIBlurEffect(style: .regular))
     
 
     //MARK: - Life circle TVC
@@ -29,18 +38,25 @@ final class FirstTVC: UITableViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        updateBckgroundColor()
         tabBarController?.navigationItem.rightBarButtonItem?.isHidden = true
         tabBarController?.navigationItem.title = "Книги и фильмы"
         tabBarController?.navigationController?.navigationBar.prefersLargeTitles = true
     }
     
     
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        updateBckgroundColor()
+    }
+    
+    
     // MARK: - Table view data source and delegate
     override func numberOfSections(in tableView: UITableView) -> Int { sections.count }
     
-    override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return section == 0 ? 80 : 20
-    }
+    
+    override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat { return section == 0 ? 80 : 20 }
+    
     
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         switch sections[section] {
@@ -52,6 +68,7 @@ final class FirstTVC: UITableViewController {
             return nil
         }
     }
+    
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch sections[section] {
@@ -63,6 +80,7 @@ final class FirstTVC: UITableViewController {
             return 1
         }
     }
+    
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath) as? CellsFirstTVC
@@ -87,10 +105,11 @@ final class FirstTVC: UITableViewController {
             cell.img.tintColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
             cell.img?.backgroundColor = .systemGray
         }
+        cell.selectionStyle = .none
         return cell
     }
     
-    // TODO: доделать переходы
+    
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         guard let vc1 = tabBarController?.viewControllers?[1] as? SecondVC else { return }
         switch sections[indexPath.section] {
@@ -107,7 +126,8 @@ final class FirstTVC: UITableViewController {
                 vc1.addItem()
             }
         case .whatToDo:
-            presentAlert("Данная функция пока не доступна!)", false)
+            getData()
+            items.isEmpty ? presentAlert("Данных нет, добавьте интересуемый контент!", false) : showRandomView()
         }
     }
     
@@ -116,5 +136,80 @@ final class FirstTVC: UITableViewController {
         tabBarController?.tabBar.tintColor = #colorLiteral(red: 0.5808190107, green: 0.0884276256, blue: 0.3186392188, alpha: 1)
         tableView.isScrollEnabled = false
         tableView.separatorStyle = .none
+    }
+    
+    
+    private func showBlEff() {
+        blurEff.frame = view.bounds
+        view.addSubview(blurEff)
+    }
+    
+    
+    private func cancelBlurEffect() {
+        blurEff.removeFromSuperview()
+    }
+    
+    
+    private func showRandomView() {
+        guard !items.isEmpty else {print("** items is Empty"); return }
+        setupRandomView()
+        randomItemView.items = items
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { [weak self] in
+            self?.randomItemView.showTitleItem()
+        }
+    }
+    
+    
+    private func setupRandomView() {
+         showBlEff()
+         randomItemView.frame.size = CGSize(width: 340, height: 230)
+         randomItemView.center.x = view.center.x
+         randomItemView.center.y = view.center.y - 200
+         randomItemView.transform = CGAffineTransform(scaleX: 0.8, y: 1.5)
+         randomItemView.delegateCloseView = self
+         view.addSubview(randomItemView)
+         UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.5, initialSpringVelocity: 0) { [weak self] in
+             self?.randomItemView.transform = .identity
+         }
+     }
+    
+    
+    // MARK: - CoreData methods
+    private func loadBooks(with request: NSFetchRequest<Book> = Book.fetchRequest()) {
+        do {
+            bookItems = try context.fetch(request)
+            bookItems.forEach { book in
+                if !book.read { items.append(book) }
+            }
+        } catch {
+            let error = error as NSError
+            fatalError("-- ошибка метода \(#function) класса SecondVC: \(error)")
+        }
+    }
+    
+    
+    private func loadMovies(with request: NSFetchRequest<Movie> = Movie.fetchRequest()) {
+        do {
+            movieItems = try context.fetch(request)
+            movieItems.forEach { movie in
+                if !movie.watched { items.append(movie) }
+            }
+        } catch {
+            let error = error as NSError
+            fatalError("-- ошибка метода \(#function) класса SecondVC: \(error)")
+        }
+    }
+    
+    
+    private func getData() {
+        loadBooks()
+        loadMovies()
+    }
+    
+    
+    // MARK: - Relize PROTOCOLS
+    func closeView() {
+        randomItemView.removeFromSuperview()
+        cancelBlurEffect()
     }
 }

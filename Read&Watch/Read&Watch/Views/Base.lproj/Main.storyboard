@@ -172,7 +172,7 @@
                             <constraint firstItem="CBM-2l-ofI" firstAttribute="trailing" secondItem="84E-Rc-rOO" secondAttribute="trailing" constant="10" id="qrM-F6-neM"/>
                         </constraints>
                     </view>
-                    <tabBarItem key="tabBarItem" title="" image="exclamationmark.icloud" catalog="system" id="4Wd-cP-tpf"/>
+                    <tabBarItem key="tabBarItem" title="" image="xmark.icloud" catalog="system" id="4Wd-cP-tpf"/>
                     <connections>
                         <outlet property="searchBar" destination="mfI-9s-BpU" id="nKe-xX-qCd"/>
                         <outlet property="segmentedControl" destination="MpY-cj-4gz" id="6hO-1b-Bu0"/>
@@ -222,7 +222,7 @@
                             <outlet property="delegate" destination="DsR-0Q-PhQ" id="Hd0-bn-gzf"/>
                         </connections>
                     </tableView>
-                    <tabBarItem key="tabBarItem" title="" image="livephoto.play" catalog="system" id="uT9-K7-RlN"/>
+                    <tabBarItem key="tabBarItem" title="" image="checkmark.icloud.fill" catalog="system" id="uT9-K7-RlN"/>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Ohq-hG-OWy" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
@@ -425,11 +425,11 @@
         </scene>
     </scenes>
     <resources>
+        <image name="checkmark.icloud.fill" catalog="system" width="128" height="90"/>
         <image name="chevron.backward.circle" catalog="system" width="128" height="123"/>
-        <image name="exclamationmark.icloud" catalog="system" width="128" height="90"/>
         <image name="homekit" catalog="system" width="128" height="104"/>
-        <image name="livephoto.play" catalog="system" width="128" height="124"/>
         <image name="photo.artframe" catalog="system" width="128" height="93"/>
+        <image name="xmark.icloud" catalog="system" width="128" height="90"/>
         <systemColor name="secondaryLabelColor">
             <color red="0.23529411764705882" green="0.23529411764705882" blue="0.2627450980392157" alpha="0.59999999999999998" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
