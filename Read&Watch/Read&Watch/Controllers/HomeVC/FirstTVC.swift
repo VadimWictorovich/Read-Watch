@@ -154,7 +154,9 @@ final class FirstTVC: UITableViewController, CloseViewDelegate {
         guard !items.isEmpty else {print("** items is Empty"); return }
         setupRandomView()
         randomItemView.items = items
-        randomItemView.showTitleItem()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { [weak self] in
+            self?.randomItemView.showTitleItem()
+        }
     }
     
     
