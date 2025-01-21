@@ -23,8 +23,7 @@ class RandomItemView: UIView {
     // UI properties
     private let labelMain: UILabel = {
         let lab = UILabel()
-        lab.font = .boldSystemFont(ofSize: 14)
-        //lab.font = .systemFont(ofSize: 14)
+        lab.font = .boldSystemFont(ofSize: 16)
         lab.textAlignment = .center
         lab.numberOfLines = 0
         lab.translatesAutoresizingMaskIntoConstraints = false
@@ -46,7 +45,6 @@ class RandomItemView: UIView {
         but.setImage(img, for: .normal)
         but.translatesAutoresizingMaskIntoConstraints = false
         but.addTarget(nil, action: #selector(closeAction), for: .allTouchEvents)
-        //but.isHidden = true
         return but
     }()
     
