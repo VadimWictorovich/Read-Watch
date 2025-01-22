@@ -40,7 +40,7 @@ final class FirstTVC: UITableViewController, CloseViewDelegate {
         super.viewWillAppear(animated)
         updateBckgroundColor()
         tabBarController?.navigationItem.rightBarButtonItem?.isHidden = true
-        tabBarController?.navigationItem.title = "Книги и фильмы"
+        tabBarController?.navigationItem.title = "Read & Watch"
         tabBarController?.navigationController?.navigationBar.prefersLargeTitles = true
     }
     
