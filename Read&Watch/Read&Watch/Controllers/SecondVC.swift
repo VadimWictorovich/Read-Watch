@@ -20,10 +20,10 @@ final class SecondVC: UIViewController, UITableViewDataSource, UITableViewDelega
     }()
     var books: [Book] = []
     var movies: [Movie] = []
-    private var incompleteBooks: [Book] {
+    var incompleteBooks: [Book] {
         return books.filter { !$0.read }
     }
-    private var incompleteMovies: [Movie] {
+    var incompleteMovies: [Movie] {
         return movies.filter { !$0.watched }
     }
     //private weak var tabBarCont: TabBarControoler?
@@ -249,6 +249,8 @@ final class SecondVC: UIViewController, UITableViewDataSource, UITableViewDelega
     
     
     func scrollToSection(section: Int) {
+        if section == 0 && incompleteBooks.isEmpty { return }
+        if section == 1 && incompleteMovies.isEmpty { return }
         let indexPath = IndexPath(row: 0, section: section)
         tableView.scrollToRow(at: indexPath, at: .top, animated: true)
     }

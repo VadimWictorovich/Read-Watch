@@ -114,15 +114,16 @@ final class FirstTVC: UITableViewController, CloseViewDelegate {
         guard let vc1 = tabBarController?.viewControllers?[1] as? SecondVC else { return }
         switch sections[indexPath.section] {
         case .categories:
-            //tabBarController?.selectedIndex = 1
-            switchToTab1(1, animationOptions: .transitionCurlDown)
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            switchToTab1(1, animationOptions: .transitionFlipFromRight)
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
                 vc1.segmentedControl.selectedSegmentIndex = indexPath.row
+                if indexPath.row == 0 && vc1.incompleteBooks.isEmpty { return }
+                if indexPath.row == 1 && vc1.incompleteMovies.isEmpty { return }
                 vc1.scrollToSection(section: indexPath.row)
             }
         case .add:
             switchToTab1(1, animationOptions: .transitionFlipFromRight)
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
                 vc1.addItem()
             }
         case .whatToDo:
