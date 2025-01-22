@@ -26,7 +26,6 @@ final class SecondVC: UIViewController, UITableViewDataSource, UITableViewDelega
     var incompleteMovies: [Movie] {
         return movies.filter { !$0.watched }
     }
-    //private weak var tabBarCont: TabBarControoler?
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var segmentedControl: UISegmentedControl!
     @IBOutlet weak var searchBar: UISearchBar!
@@ -112,15 +111,16 @@ final class SecondVC: UIViewController, UITableViewDataSource, UITableViewDelega
         case .books:
             presentAlert("Контент не найден", false)
         case .movies:
+            startActivityAnimation()
             guard let movieName = incompleteMovies[indexPath.row].name else { return }
             NetworkService.searchMoviesByName(movieName: movieName) { [weak self] result, error in
-//                guard error != nil else { print (" ***** \(#function) error: \(String(describing: error))"); return}
                 guard let result else { print (" ***** \(#function) нет объекта"); return }
                 let arr =  result.docs
-                if arr.isEmpty { self?.presentAlert("Контент не найден", false)
+                if arr.isEmpty {
+                    self?.stopActivityAnimation()
+                    self?.presentAlert("Контент не найден", false)
                 } else {
                     vc.showMoviesList = arr
-                    self?.startActivityAnimation()
                     DispatchQueue.main.async {
                         self?.navigationController?.pushViewController(vc, animated: true)
                     }

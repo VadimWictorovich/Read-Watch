@@ -38,5 +38,4 @@ final class ListTVCell: UITableViewCell {
         imageLbl.layer.cornerRadius = 10
         selectionStyle = .none
     }
-
 }
