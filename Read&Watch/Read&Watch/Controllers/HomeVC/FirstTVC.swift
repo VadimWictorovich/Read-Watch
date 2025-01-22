@@ -153,6 +153,7 @@ final class FirstTVC: UITableViewController, CloseViewDelegate {
     private func showRandomView() {
         guard !items.isEmpty else {print("** items is Empty"); return }
         setupRandomView()
+        tabBarController?.tabBar.isHidden = true
         randomItemView.items = items
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { [weak self] in
             self?.randomItemView.showTitleItem()
@@ -211,5 +212,6 @@ final class FirstTVC: UITableViewController, CloseViewDelegate {
     func closeView() {
         randomItemView.removeFromSuperview()
         cancelBlurEffect()
+        tabBarController?.tabBar.isHidden = false
     }
 }
