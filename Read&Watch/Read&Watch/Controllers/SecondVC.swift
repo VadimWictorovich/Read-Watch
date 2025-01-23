@@ -359,55 +359,6 @@ final class SecondVC: UIViewController, UITableViewDataSource, UITableViewDelega
     
     
     //MARK: - Методы по удалению экземпляров книг и фильмов
-//    private func deleteBook(by id: UUID) {
-//        guard let index = books.firstIndex(where: { $0.id == id }) else { print("ID для удаления книги не найден"); return }
-//        let bookDelete = books[index]
-//        context.delete(bookDelete)
-//        saveData()
-//        books.remove(at: index)
-//        tableView.deleteRows(at: [IndexPath(row: index, section: 0)], with: .fade)
-//    }
-//    
-//    private func deleteMovie(by id: UUID) {
-//        guard let index = movies.firstIndex(where: { $0.id == id }) else { print("ID для удаления фильма не найден"); return }
-//        let movieDelete = movies[index]
-//        context.delete(movieDelete)
-//        saveData()
-//        movies.remove(at: index)
-//        tableView.deleteRows(at: [IndexPath(row: index, section: 1)], with: .fade)
-//    }
-    
-    
-    // нужно оставить так как это точно рабочий метод
-    /*
-     private func deleteItem<T: NSManagedObject>(_ item: T) {
-         if let index = books.firstIndex(where: { $0 == item } ) {
-             let bookDelete = books[index]
-             context.delete(bookDelete)
-             saveData()
-             books.remove(at: index)
-             tableView.deleteRows(at: [IndexPath(row: index, section: 0)], with: .fade)
-         } else if let index = movies.firstIndex(where: { $0 == item } ) {
-             let movieDelete = movies[index]
-             context.delete(movieDelete)
-             saveData()
-             movies.remove(at: index)
-             tableView.deleteRows(at: [IndexPath(row: index, section: 1)], with: .fade)
-         }
-     }
-     */
-    
-    /*
-     Параметры:
-     1._ item: T:
-        - Это объект, который вы хотите удалить (например, книга или фильм).
-     2. from array: inout [T]:
-        - array — массив, из которого удаляется объект.
-        - inout говорит о том, что массив передается по ссылке и может быть изменен.
-     3. in section: Int:
-        - Номер секции таблицы, чтобы знать, какую строку удалить из tableView.
-     */
-    
     private func deleteItem<T: NSManagedObject>(_ item: T, from array: inout [T],row indexPath: Int,  in section: Int) {
         guard let index = array.firstIndex(where: { $0 == item} ) else { print ("Нет объекта для удаления"); return }
         let deleteItem = array[index]
@@ -422,20 +373,6 @@ final class SecondVC: UIViewController, UITableViewDataSource, UITableViewDelega
 
     
     //MARK: - Методы по переносу экземпляров книг и фильмов на третий экран
-    /*
-     РАБОЧИЙ
-     private func markCompleteItem<T: NSManagedObject>(_ item: T, witchKey keyPath: ReferenceWritableKeyPath<T, Bool>,from array: inout [T], row indexPath: Int, in section: Int) {
-         guard let index = array.firstIndex(where: { $0 == item} ) else { print ("Нет объекта для переносаа в категорию ВЫПОЛНЕНО"); return }
-             let strDate = setupActualDate()
-             array[index][keyPath: keyPath] = true
-             saveForAsyncMethods()
-             DispatchQueue.main.async { [weak self] in
-                 self?.tableView.deleteRows(at: [IndexPath(row: indexPath, section: section)], with: .fade)
-                 self?.tableView.reloadData()
-             }
-     }
-     */
-    
     private func markCompleteItem<T: NSManagedObject>(_ item: T, witchKey keyPath: ReferenceWritableKeyPath<T, Bool>,get dateStr: ReferenceWritableKeyPath<T, String?>, from array: inout [T], row indexPath: Int, in section: Int) {
         guard let index = array.firstIndex(where: { $0 == item} ) else { print ("Нет объекта для переносаа в категорию ВЫПОЛНЕНО"); return }
             let strDate = setupActualDate()
@@ -447,24 +384,6 @@ final class SecondVC: UIViewController, UITableViewDataSource, UITableViewDelega
                 self?.tableView.reloadData()
             }
     }
-
-    
-//    private func goBookToThird(by id: UUID) {
-//        guard let index = books.firstIndex(where: { $0.id == id }) else { print("ID для переноса книги не найден"); return }
-//        let bookGo = books[index]
-//        bookGo.read = true
-//        saveData()
-//        tableView.deleteRows(at: [IndexPath(row: index, section: 0)], with: .fade)
-//    }
-//    
-//    
-//    private func goMovieToThird(by id: UUID) {
-//        guard let index = movies.firstIndex(where: { $0.id == id }) else { print("ID для переноса фильма не найден"); return }
-//        let movieGo = movies[index]
-//        movieGo.watched = true
-//        saveData()
-//        tableView.deleteRows(at: [IndexPath(row: index, section: 1)], with: .fade)
-//    }
     
     
     private func setupActualDate() -> String {
