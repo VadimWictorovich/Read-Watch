@@ -65,7 +65,7 @@ final class SecondVC: UIViewController, UITableViewDataSource, UITableViewDelega
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat { 30 }
     
     
-    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat { 80 }
+    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat { 50 }
     
     
     func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
