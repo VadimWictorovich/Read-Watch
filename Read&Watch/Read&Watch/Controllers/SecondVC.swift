@@ -9,7 +9,7 @@ import UIKit
 import CoreData
 
 final class SecondVC: UIViewController, UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate {
-    
+
     // MARK: - Properties
     private let sections = BooksAndMovies.allCases
     private let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
@@ -20,12 +20,10 @@ final class SecondVC: UIViewController, UITableViewDataSource, UITableViewDelega
     }()
     var books: [Book] = []
     var movies: [Movie] = []
-    var incompleteBooks: [Book] {
-        return books.filter { !$0.read }
-    }
-    var incompleteMovies: [Movie] {
-        return movies.filter { !$0.watched }
-    }
+    var incompleteBooks: [Book] { return books.filter { !$0.read } }
+    var incompleteMovies: [Movie] { return movies.filter { !$0.watched } }
+    private var searchData: [AnyObject] = []
+    private var isSearching: Bool { return !(searchBar.text?.isEmpty ?? true) }
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var segmentedControl: UISegmentedControl!
     @IBOutlet weak var searchBar: UISearchBar!
@@ -37,7 +35,9 @@ final class SecondVC: UIViewController, UITableViewDataSource, UITableViewDelega
         setupUI()
         getData()
         setingsNavBut()
+        setupSearch()
     }
+    
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -49,12 +49,13 @@ final class SecondVC: UIViewController, UITableViewDataSource, UITableViewDelega
   
     
     // MARK: - Table view data source and delegate
-    func numberOfSections(in tableView: UITableView) -> Int { sections.count }
+    func numberOfSections(in tableView: UITableView) -> Int { return isSearching ? 1 : sections.count }
     
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         switch sections[section] {
         case .books:
+            if isSearching { return "Результаты поиска"}
             return incompleteBooks.isEmpty ? "Данные о книгах отсутствуют" : "Книги (\(incompleteBooks.count))"
         case .movies:
             return incompleteMovies.isEmpty ? "Данные о фильмах отсутствуют" : "Фильмы (\(incompleteMovies.count))"
@@ -74,11 +75,15 @@ final class SecondVC: UIViewController, UITableViewDataSource, UITableViewDelega
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        switch sections[section] {
-        case .books:
-            return incompleteBooks.count
-        case .movies:
-            return incompleteMovies.count
+        if isSearching {
+            return searchData.count
+        } else {
+            switch sections[section] {
+            case .books:
+                return incompleteBooks.count
+            case .movies:
+                return incompleteMovies.count
+            }
         }
     }
     
@@ -86,20 +91,31 @@ final class SecondVC: UIViewController, UITableViewDataSource, UITableViewDelega
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
         cell.detailTextLabel?.textColor = .gray
-        cell.imageView?.tintColor = #colorLiteral(red: 1, green: 0.5781051517, blue: 0, alpha: 1)
-        switch sections[indexPath.section] {
-        case .books:
-            let book = incompleteBooks[indexPath.row]
-            // book.fill
-            cell.textLabel?.text = book.name
-            cell.detailTextLabel?.text = book.author
-            cell.imageView?.image = UIImage(systemName: "book")
-        case .movies:
-            let movie = incompleteMovies[indexPath.row]
-            // movieclapper
-            cell.textLabel?.text = movie.name
-            cell.detailTextLabel?.text = movie.genre
-            cell.imageView?.image = UIImage(systemName: "movieclapper")
+        if !isSearching {
+            cell.imageView?.tintColor = #colorLiteral(red: 1, green: 0.5781051517, blue: 0, alpha: 1)
+            switch sections[indexPath.section] {
+            case .books:
+                let book = incompleteBooks[indexPath.row]
+                cell.textLabel?.text = book.name
+                cell.detailTextLabel?.text = book.author
+                cell.imageView?.image = UIImage(systemName: "book")
+            case .movies:
+                let movie = incompleteMovies[indexPath.row]
+                cell.textLabel?.text = movie.name
+                cell.detailTextLabel?.text = movie.genre
+                cell.imageView?.image = UIImage(systemName: "movieclapper")
+            }
+        } else {
+            let item = searchData[indexPath.row]
+            if let book = item as? Book {
+                cell.textLabel?.text = book.name
+                cell.detailTextLabel?.text = book.author
+                cell.imageView?.image = UIImage(systemName: "book")
+            } else if let movie = item as? Movie {
+                cell.textLabel?.text = movie.name
+                cell.detailTextLabel?.text = movie.genre
+                cell.imageView?.image = UIImage(systemName: "movieclapper")
+            }
         }
         return cell
     }
@@ -130,7 +146,7 @@ final class SecondVC: UIViewController, UITableViewDataSource, UITableViewDelega
     }
     
     
-    func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool { true }
+    func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool { return isSearching ? false : true }
     
     //удаление ячейки
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
@@ -233,6 +249,7 @@ final class SecondVC: UIViewController, UITableViewDataSource, UITableViewDelega
         tableView.delegate = self
         tableView.separatorStyle = .none
         searchBar.delegate = self
+        navigationController?.navigationBar.tintColor = .gray
     }
     
     
@@ -456,5 +473,40 @@ final class SecondVC: UIViewController, UITableViewDataSource, UITableViewDelega
         formatter.dateFormat = "dd/MM/yyyy"
         let dateString = formatter.string(from: currentDate)
         return dateString
+    }
+    
+    
+    // MARK: - SearchBar Delegate and methods
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        filterData(for: searchText)
+        tableView.reloadData()
+    }
+    
+    
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        searchBar.text = ""
+        searchData.removeAll()
+        tableView.reloadData()
+        searchBar.resignFirstResponder()
+    }
+    
+    
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        searchBar.resignFirstResponder()
+    }
+    
+    
+    private func setupSearch() {
+        searchBar.placeholder = "Поиск"
+        searchBar.searchBarStyle = .minimal
+    }
+    
+    
+    private func filterData(for searchText: String) {
+        searchData.removeAll()
+        if !searchText.isEmpty {
+            searchData = books.filter { $0.name?.localizedCaseInsensitiveContains(searchText) == true } +
+                         movies.filter { $0.name?.localizedCaseInsensitiveContains(searchText) == true }
+        }
     }
 }
