@@ -33,6 +33,7 @@ final class ThirdTVC: UITableViewController {
         tabBarController?.navigationItem.title = "Выполнено"
         tabBarController?.navigationController?.navigationBar.prefersLargeTitles = false
         getData()
+        updateBckgroundColor()
     }
     
 

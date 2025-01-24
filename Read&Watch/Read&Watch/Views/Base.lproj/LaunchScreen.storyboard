@@ -16,37 +16,17 @@
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="1" translatesAutoresizingMaskIntoConstraints="NO" id="mjZ-wh-NYv">
-                                <rect key="frame" x="125.66666666666667" y="355" width="141.66666666666663" height="167"/>
-                                <subviews>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Read" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="B3k-Mc-ycc">
-                                        <rect key="frame" x="0.0" y="0.0" width="141.66666666666666" height="61"/>
-                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                        <fontDescription key="fontDescription" name="Impact" family="Impact" pointSize="50"/>
-                                        <color key="textColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                        <nil key="highlightedColor"/>
-                                    </label>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="&amp;" textAlignment="justified" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="GMX-av-aXq">
-                                        <rect key="frame" x="0.0" y="62" width="141.66666666666666" height="43"/>
-                                        <fontDescription key="fontDescription" name="Impact" family="Impact" pointSize="35"/>
-                                        <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                        <nil key="highlightedColor"/>
-                                    </label>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="WATCH" textAlignment="justified" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="2RA-N2-SS2">
-                                        <rect key="frame" x="0.0" y="106" width="141.66666666666666" height="61"/>
-                                        <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                        <fontDescription key="fontDescription" name="Impact" family="Impact" pointSize="50"/>
-                                        <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                        <nil key="highlightedColor"/>
-                                    </label>
-                                </subviews>
-                            </stackView>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="osnova" translatesAutoresizingMaskIntoConstraints="NO" id="Lht-mO-djj">
+                                <rect key="frame" x="16" y="59" width="361" height="759"/>
+                            </imageView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
-                        <color key="backgroundColor" red="0.0" green="0.59078120357991692" blue="0.56866882864641466" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <color key="backgroundColor" red="0.1032438651" green="0.097954697909999999" blue="0.10343723740000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstItem="mjZ-wh-NYv" firstAttribute="centerX" secondItem="6Tk-OE-BBY" secondAttribute="centerX" id="4BQ-4X-OFd"/>
-                            <constraint firstItem="mjZ-wh-NYv" firstAttribute="centerY" secondItem="6Tk-OE-BBY" secondAttribute="centerY" id="bgG-pM-4lq"/>
+                            <constraint firstItem="Lht-mO-djj" firstAttribute="top" secondItem="Ze5-6b-2t3" secondAttribute="topMargin" id="Gqo-ES-0mv"/>
+                            <constraint firstItem="Lht-mO-djj" firstAttribute="leading" secondItem="Ze5-6b-2t3" secondAttribute="leadingMargin" id="KJy-0G-yCQ"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="Lht-mO-djj" secondAttribute="trailing" id="Xy3-0w-M18"/>
+                            <constraint firstAttribute="bottomMargin" secondItem="Lht-mO-djj" secondAttribute="bottom" id="hAV-0g-KfC"/>
                         </constraints>
                     </view>
                 </viewController>
@@ -55,4 +35,7 @@
             <point key="canvasLocation" x="52.671755725190835" y="374.64788732394368"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="osnova" width="1024" height="1024"/>
+    </resources>
 </document>

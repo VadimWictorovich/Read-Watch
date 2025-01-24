@@ -58,7 +58,7 @@ extension UIViewController: NVActivityIndicatorViewable {
     }
     
     
-    // задаем цвет
+    // задаем цвет (градиент)
     func setBackgroudGradientColor(color1: UIColor, color2: UIColor) {
         let gradientLayer = CAGradientLayer()
         gradientLayer.colors = [color1.cgColor, color2.cgColor]
@@ -85,3 +85,4 @@ extension UIViewController: NVActivityIndicatorViewable {
         }
     }
 }
+
