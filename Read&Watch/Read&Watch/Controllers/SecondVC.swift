@@ -132,12 +132,12 @@ final class SecondVC: UIViewController, UITableViewDataSource, UITableViewDelega
             NetworkService.searchMoviesByName(movieName: movieName) { [weak self] result, error in
                 guard let result else { print (" ***** \(#function) нет объекта"); return }
                 let arr =  result.docs
-                if arr.isEmpty {
-                    self?.stopActivityAnimation()
-                    self?.presentAlert("Контент не найден", false)
-                } else {
-                    vc.showMoviesList = arr
-                    DispatchQueue.main.async {
+                DispatchQueue.main.async {
+                    if arr.isEmpty {
+                        self?.stopActivityAnimation()
+                        self?.presentAlert("Контент не найден", false)
+                    } else {
+                        vc.showMoviesList = arr
                         self?.navigationController?.pushViewController(vc, animated: true)
                     }
                 }
@@ -311,16 +311,15 @@ final class SecondVC: UIViewController, UITableViewDataSource, UITableViewDelega
         alert.addAction(UIAlertAction(title: "Добавить", style: .default, handler: { [weak self] _ in
             if let textField1 = alert.textFields?[0], let textField2 = alert.textFields?[1],
                let textName = textField1.text, let textAuthor = textField2.text,
-               let self, textName != "", textAuthor != ""
-            {
-                let newBook = Book(context: self.context)
-                newBook.name = textName
-                newBook.author = textAuthor
-                newBook.read = false
-                newBook.id = UUID()
-                self.books.append(newBook)
-                self.tableView.insertRows(at: [IndexPath(row: self.incompleteBooks.count - 1, section: 0)], with: .automatic)
-                self.saveData()
+               let self, textName != "", textAuthor != "" {
+                    let newBook = Book(context: self.context)
+                    newBook.name = textName
+                    newBook.author = textAuthor
+                    newBook.read = false
+                    newBook.id = UUID()
+                    self.books.append(newBook)
+                    self.tableView.insertRows(at: [IndexPath(row: self.incompleteBooks.count - 1, section: 0)], with: .automatic)
+                    self.saveData()
             }
         }))
         alert.addAction(UIAlertAction(title: "Отмена", style: .cancel))
