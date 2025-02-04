@@ -14,6 +14,7 @@ ___
 - UIKit
 - CoreData
 - Alamofire
+- GCD
 - JSON
 
 ---
